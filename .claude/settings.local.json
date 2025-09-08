@@ -2,7 +2,12 @@
   "permissions": {
     "allow": [
       "mcp__dart__pub",
-      "mcp__dart__run_tests"
+      "mcp__dart__run_tests",
+      "Bash(dart pub:*)",
+      "Bash(make:*)",
+      "Bash(dart:*)",
+      "mcp__dart__analyze_files",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": []

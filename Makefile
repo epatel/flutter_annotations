@@ -7,14 +7,15 @@ menu:
 	echo "4 make analyze         - flutter analyze"
 	echo "5 make build           - flutter build web"
 	echo "6 make run             - flutter run --debug"
-	echo "7 make update_phony    - update .PHONY in Makefile"
+	echo "7 make generate        - generate annotations.g.dart & builder.g.dart"
+	echo "8 make update_phony    - update .PHONY in Makefile"
 
 select:
 	read -p ">>> " P ; make menu | grep "^$$P " | cut -d ' ' -f2-3 ; make menu | grep "^$$P " | cut -d ' ' -f2-3 | bash
 
 .SILENT:
 
-.PHONY: info menu select reset format test analyze build run deploy update_phony 
+.PHONY: info menu select reset format test analyze build run generate update_phony 
 
 reset:
 	flutter clean && flutter pub get
@@ -37,6 +38,9 @@ build:
 
 run:
 	flutter run --debug
+
+generate:
+	dart builder/builder.dart lib
 
 update_phony:
 	@echo "##### Updating .PHONY targets #####"

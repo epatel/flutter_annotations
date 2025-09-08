@@ -1,0 +1,11 @@
+name: builder
+description: Custom code generator for flutter_annotations
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  analyzer: ^6.4.1
+  dart_style: ^2.3.6
+  path: ^1.9.0
+  args: ^2.5.0
