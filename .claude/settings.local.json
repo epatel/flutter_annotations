@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__dart__pub",
+      "mcp__dart__run_tests"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
