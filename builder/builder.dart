@@ -4,6 +4,7 @@ import 'annotations/toString_annotation.dart';
 import 'annotations/equality_annotation.dart';
 import 'annotations/json_annotation.dart';
 import 'annotations/copyWith_annotation.dart';
+import 'annotations/initializer_annotation.dart';
 import 'core/code_builder.dart';
 
 void main(List<String> arguments) {
@@ -48,6 +49,7 @@ void _registerAnnotations(AnnotationRegistry registry) {
   EqualityAnnotation.register(registry);
   JsonAnnotation.register(registry);
   CopyWithAnnotation.register(registry);
+  InitializerAnnotation.register(registry);
   
   final supportedAnnotations = registry.getSupportedAnnotations();
   print('✅ Registered ${registry.processors.length} processors for annotations: ${supportedAnnotations.join(', ')}');

@@ -1,5 +1,6 @@
 import '../annotations.g.dart';
 
+@Initializer()
 @JsonSerializable()
 @GenerateToString()
 class Product {
@@ -14,4 +15,11 @@ class Product {
     required this.price,
     this.description,
   });
+
+  static Function()? initialize() {
+    print('Initializing Product...');
+    return () {
+      print('Product post-initialization callback executed');
+    };
+  }
 }

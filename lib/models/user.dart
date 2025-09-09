@@ -1,5 +1,6 @@
 import '../annotations.g.dart';
 
+@initializer
 @generateToString
 @generateEquality
 @jsonSerializable
@@ -16,4 +17,10 @@ class User {
     required this.email,
     this.isActive = true,
   });
+
+  static Function()? initialize() {
+    print('Initializing User...');
+    // No callback needed for User
+    return null;
+  }
 }
