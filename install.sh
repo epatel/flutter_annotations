@@ -2,7 +2,7 @@
 
 # Flutter Annotations Builder Installer
 # Downloads and extracts only the builder folder from the flutter_annotations repository
-# Usage: /bin/bash -c "$(curl -fsSL https://path/to/this/install.sh)"
+# Usage: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/epatel/flutter_annotations/HEAD/install.sh)"
 
 set -e
 

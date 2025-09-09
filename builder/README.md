@@ -2,6 +2,12 @@
 
 This directory contains the dynamic annotation/code generation system for Flutter Annotations. It's a self-contained Dart project that processes annotated classes and generates extension methods.
 
+## Install
+
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/epatel/flutter_annotations/HEAD/install.sh)"
+```
+
 ## 🏗️ Architecture
 
 ### Overview
