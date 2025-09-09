@@ -1,6 +1,21 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import '../core/field_info.dart';
 
+/// Represents a parameter for an annotation class
+class AnnotationParameter {
+  final String type;
+  final String name;
+  final String? defaultValue;
+  final String? description;
+  
+  const AnnotationParameter({
+    required this.type,
+    required this.name,
+    this.defaultValue,
+    this.description,
+  });
+}
+
 /// Abstract base class for all annotation processors
 abstract class BaseAnnotationProcessor {
   /// The name of the annotation this processor handles
@@ -8,6 +23,9 @@ abstract class BaseAnnotationProcessor {
   
   /// Alternative names for the annotation (e.g., both 'GenerateToString' and 'generateToString')
   List<String> get annotationAliases => [];
+  
+  /// Parameters for the annotation class (empty for simple annotations)
+  List<AnnotationParameter> get annotationParameters => [];
 
   /// Check if this processor can handle the given annotation name
   bool canProcess(String annotationName) {

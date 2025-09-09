@@ -8,6 +8,22 @@ class JsonAnnotation extends BaseAnnotationProcessor {
 
   @override
   List<String> get annotationAliases => ['jsonSerializable'];
+  
+  @override
+  List<AnnotationParameter> get annotationParameters => [
+    AnnotationParameter(
+      type: 'bool',
+      name: 'explicitToJson',
+      defaultValue: 'false',
+      description: 'Whether to explicitly call toJson on nested objects',
+    ),
+    AnnotationParameter(
+      type: 'bool', 
+      name: 'includeIfNull',
+      defaultValue: 'true',
+      description: 'Whether to include null fields in JSON output',
+    ),
+  ];
 
   /// Register this annotation processor with the registry
   static void register(AnnotationRegistry registry) {

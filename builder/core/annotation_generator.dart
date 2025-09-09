@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dart_style/dart_style.dart';
 import '../annotations/registry.dart';
+import '../annotations/base_annotation.dart';
 
 class AnnotationGenerator {
   final AnnotationRegistry _registry;
@@ -16,7 +17,7 @@ class AnnotationGenerator {
 
     // Annotation classes (generated from registry)
     for (final processor in _registry.processors) {
-      buffer.writeln(_generateAnnotationClass(processor.annotationName));
+      buffer.writeln(_generateAnnotationClass(processor));
       buffer.writeln();
     }
 
@@ -32,26 +33,66 @@ class AnnotationGenerator {
     }
   }
 
-  String _generateAnnotationClass(String annotationName) {
-    // Special handling for JsonSerializable
-    if (annotationName == 'JsonSerializable') {
+  String _generateAnnotationClass(BaseAnnotationProcessor processor) {
+    final annotationName = processor.annotationName;
+    final parameters = processor.annotationParameters;
+    final comment = _generateAnnotationComment(annotationName);
+
+    if (parameters.isEmpty) {
+      // Simple annotation without parameters
       return '''
-/// Annotation to generate JSON serialization methods
-class JsonSerializable {
-  final bool explicitToJson;
-  final bool includeIfNull;
-
-  const JsonSerializable({
-    this.explicitToJson = false,
-    this.includeIfNull = true,
-  });
-}''';
-    }
-
-    return '''
+$comment
 class $annotationName {
   const $annotationName();
 }''';
+    }
+
+    // Annotation with parameters
+    final fieldsBuffer = StringBuffer();
+    final constructorBuffer = StringBuffer();
+
+    // Generate final fields
+    for (final param in parameters) {
+      fieldsBuffer.writeln('  final ${param.type} ${param.name};');
+    }
+
+    // Generate constructor parameters
+    final constructorParams = parameters
+        .map((param) {
+          final defaultValue = param.defaultValue;
+          if (defaultValue != null) {
+            return 'this.${param.name} = $defaultValue';
+          }
+          return 'this.${param.name}';
+        })
+        .join(',\n    ');
+
+    return '''
+$comment
+class $annotationName {
+${fieldsBuffer.toString().trimRight()}
+
+  const $annotationName({
+    $constructorParams,
+  });
+}''';
+  }
+
+  String _generateAnnotationComment(String annotationName) {
+    switch (annotationName) {
+      case 'GenerateToString':
+        return '/// Annotation to generate toString method for a class';
+      case 'GenerateEquality':
+        return '/// Annotation to generate equality (== and hashCode) methods for a class';
+      case 'JsonSerializable':
+        return '/// Annotation to generate JSON serialization methods';
+      case 'GenerateCopyWith':
+        return '/// Annotation to generate a copyWith method for a class';
+      case 'Initializer':
+        return '/// Annotation to mark a class for inclusion in builderInitializer';
+      default:
+        return '/// Annotation for $annotationName';
+    }
   }
 
   String _generateConvenienceConstants() {
