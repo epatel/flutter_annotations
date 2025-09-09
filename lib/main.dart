@@ -3,6 +3,6 @@ import 'app.dart';
 import 'builder.g.dart';
 
 void main() {
-  InitializeBuilder();
+  BuilderInitializer();
   runApp(const App());
 }

@@ -57,18 +57,32 @@ Models use annotations from `lib/annotations.g.dart` (generated file):
 ```dart
 import '../annotations.g.dart';
 
+@initializer               // For initialization system
 @generateToString
 @generateEquality
 @jsonSerializable
 @generateCopyWith
 class User {
   // class definition
+  
+  // Required for @initializer classes
+  static Function()? initialize() {
+    // initialization logic
+    return () { /* optional callback */ };
+  }
 }
 ```
 
 ### Generated Files
 - `lib/annotations.g.dart`: Annotation class definitions and constants
-- `lib/builder.g.dart`: Generated extensions for annotated models
+- `lib/builder.g.dart`: Generated extensions for annotated models + `InitializeBuilder()` function
+
+### Available Annotations
+- `@generateToString` / `@GenerateToString()`: Generates `toStringGenerated()` method
+- `@generateEquality` / `@GenerateEquality()`: Generates `isEqualTo()` and `generatedHashCode` 
+- `@jsonSerializable` / `@JsonSerializable()`: Generates `toJson()` and `fromJson()` methods
+- `@generateCopyWith` / `@GenerateCopyWith()`: Generates `copyWith()` method
+- `@initializer` / `@Initializer()`: Includes class in global `InitializeBuilder()` function
 
 ## Architecture Deep Dive
 
@@ -90,6 +104,7 @@ class User {
 - **Design System**: Centralized theming in `lib/design_system/`
 - **Clean Architecture**: Separation between UI, business logic, and data
 - **Provider Pattern**: State management with context providers
+- **Initialization System**: `InitializeBuilder()` called in `main()` for class initialization with callbacks
 
 ## Extension Points
 

@@ -158,7 +158,7 @@ class CodeBuilder {
     buffer.writeln(
       '/// and executes their optional callbacks after initialization',
     );
-    buffer.writeln('void InitializeBuilder() {');
+    buffer.writeln('void BuilderInitializer() {');
     buffer.writeln('  final callbacks = <Function()>[];');
     buffer.writeln();
     buffer.writeln('  // Call all initialize methods and collect callbacks');

@@ -79,7 +79,7 @@ class Immutable {
 
   String _generateInitializerAnnotation() {
     return '''
-/// Annotation to mark a class for inclusion in InitializeBuilder
+/// Annotation to mark a class for inclusion in BuilderInitializer
 class Initializer {
   const Initializer();
 }''';

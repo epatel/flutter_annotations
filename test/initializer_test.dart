@@ -2,6 +2,6 @@ import 'package:flutter_annotations/builder.g.dart';
 
 void main() {
   print('=== Testing InitializeBuilder ===');
-  InitializeBuilder();
+  BuilderInitializer();
   print('=== InitializeBuilder test complete ===');
 }
