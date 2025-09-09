@@ -4,128 +4,197 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Flutter application that demonstrates a custom annotation system with code generation. The project serves as both a working Flutter app and a showcase for a modular annotation/builder system that generates Dart code at build time.
+This is a Flutter application that demonstrates a custom annotation system with dynamic code generation. The project serves as both a working Flutter app and a showcase for a fully modular, registry-based annotation/builder system that generates Dart code at build time.
 
-## Key Components
+## Core Architecture
 
 ### Flutter Application
-- **Architecture**: Feature-based structure with clean separation of concerns
-- **State Management**: Provider pattern for state management
-- **Navigation**: GoRouter for declarative routing
+- **Architecture**: Feature-based structure with Provider state management and GoRouter navigation
+- **State Management**: Provider pattern for global state
+- **Navigation**: GoRouter for declarative routing  
 - **Design System**: Custom theme system with Material 3 design tokens
-- **Structure**: `lib/features/`, `lib/core/`, `lib/design_system/`, `lib/models/`
+- **Initialization**: Global `builderInitializer()` function with callback support
 
-### Annotation & Code Generation System
-- **Purpose**: Custom annotation processor that generates Dart extensions for model classes
-- **Location**: All builder code lives in `builder/` directory (separate from main Flutter app)
-- **Output**: Generates `lib/annotations.g.dart` and `lib/builder.g.dart`
-- **Architecture**: Modular, self-registering annotation processors
+### Dynamic Annotation System
+- **Registry Pattern**: Self-registering annotation processors with full metadata
+- **Dynamic Generation**: Annotations auto-generated from processor definitions
+- **Parameter Support**: JsonSerializable supports `explicitToJson` and `includeIfNull` parameters
+- **Extension Methods**: Generates extensions rather than modifying source files
+- **Nested Objects**: Full support for complex object serialization with `explicitToJson`
 
 ## Development Commands
 
-### Essential Commands
+### Essential Workflow
 ```bash
-# Code generation (must run after model changes)
+# Code generation (run after any model changes)
 make generate
 
-# Development workflow
-make run              # Run Flutter app in debug mode
-make test             # Run all tests
-make format           # Format all Dart code
-make analyze          # Run static analysis
+# Development
+make run              # Flutter app in debug mode
+make test             # All tests including JSON round-trip tests
+make format           # Format lib/ test/ builder/ directories  
+make analyze          # Static analysis
 make reset            # Clean and reinstall dependencies
-```
 
-### Builder-specific Commands
-```bash
 # Manual code generation
 dart builder/builder.dart lib
-
-# View builder help
-dart builder/builder.dart --help
 ```
 
-## Code Generation Workflow
+### Test Commands
+```bash
+# Run specific tests
+dart test/json_serializable_test.dart    # JSON round-trip testing
+dart test/usage_test.dart                 # Generated method usage
+dart test/initializer_test.dart           # Initialization system
+flutter test test/widget_test.dart        # Widget tests
+```
 
-### When to Run Code Generation
-- After adding/modifying annotations on model classes
-- After creating new model classes with annotations
-- Before committing changes that involve annotated models
+## Code Generation System
 
-### Annotation Usage
-Models use annotations from `lib/annotations.g.dart` (generated file):
+### Current Implementation Status
+- **Fully Dynamic**: No hardcoded annotation handling - all driven by registry
+- **Parameter Support**: JsonSerializable with `explicitToJson` and `includeIfNull`
+- **Auto-Generated Comments**: Each processor defines its own documentation
+- **Nested Object Support**: Full round-trip JSON serialization with complex objects
+- **Self-Contained**: Builder system independent of main Flutter dependencies
+
+### Generated Function Names
+The system generates extension methods with specific naming to avoid conflicts:
+- `toStringGenerated()` (not `toString()`)
+- `isEqualTo()` (not `operator ==`)
+- `generatedHashCode` (not `hashCode`)
+- `builderInitializer()` (global function, not `InitializeBuilder`)
+
+### Annotation Usage Examples
 ```dart
 import '../annotations.g.dart';
+import 'category.dart';
 
-@initializer               // For initialization system
-@generateToString
-@generateEquality
-@jsonSerializable
-@generateCopyWith
-class User {
-  // class definition
-  
-  // Required for @initializer classes
+@Initializer()
+@JsonSerializable(explicitToJson: true, includeIfNull: false)
+@GenerateToString()
+class Product {
+  final String id;
+  final String name;
+  final double price;
+  final String? description;
+  final Category category;  // Nested object
+
+  // Required for @Initializer classes
   static Function()? initialize() {
-    // initialization logic
-    return () { /* optional callback */ };
+    print('Initializing Product...');
+    return () => print('Product post-init callback');
   }
 }
 ```
 
-### Generated Files
-- `lib/annotations.g.dart`: Annotation class definitions and constants
-- `lib/builder.g.dart`: Generated extensions for annotated models + `InitializeBuilder()` function
-
-### Available Annotations
-- `@generateToString` / `@GenerateToString()`: Generates `toStringGenerated()` method
-- `@generateEquality` / `@GenerateEquality()`: Generates `isEqualTo()` and `generatedHashCode` 
-- `@jsonSerializable` / `@JsonSerializable()`: Generates `toJson()` and `fromJson()` methods
-- `@generateCopyWith` / `@GenerateCopyWith()`: Generates `copyWith()` method
-- `@initializer` / `@Initializer()`: Includes class in global `InitializeBuilder()` function
+### JsonSerializable Parameters
+- **explicitToJson: true**: Calls `.toJson()` on nested objects (like `category.toJson()`)
+- **includeIfNull: false**: Excludes null fields from JSON output
+- **Defaults**: `explicitToJson: false, includeIfNull: true`
 
 ## Architecture Deep Dive
 
-### Builder System Architecture
-- **Registry Pattern**: `AnnotationRegistry` manages all annotation processors
-- **Self-Registration**: Each processor registers itself via static `register()` method
-- **Modular Processors**: Each annotation type has its own processor class
-- **Extension Generation**: Creates Dart extensions rather than modifying source files
+### Registry-Based System
+- **AnnotationRegistry**: Central registry managing all processors
+- **BaseAnnotationProcessor**: Abstract base with metadata support
+- **AnnotationParameter**: Supports parameterized annotations
+- **Dynamic Comments**: Each processor provides its own documentation
 
 ### Builder Components
-- `builder/builder.dart`: Main entry point and orchestrator
-- `builder/core/code_builder.dart`: Core scanning and generation logic
-- `builder/core/annotation_generator.dart`: Generates annotation definitions
-- `builder/annotations/`: Individual annotation processors
+- `builder/builder.dart`: Main orchestrator with self-registering processors
+- `builder/core/code_builder.dart`: AST scanning and generation logic
+- `builder/core/annotation_generator.dart`: Dynamic annotation class generation
+- `builder/annotations/base_annotation.dart`: Base processor with parameter support
 - `builder/annotations/registry.dart`: Central processor registry
 
-### Flutter App Architecture
-- **Feature-Based**: Each feature in `lib/features/` with screens, widgets, providers
-- **Design System**: Centralized theming in `lib/design_system/`
-- **Clean Architecture**: Separation between UI, business logic, and data
-- **Provider Pattern**: State management with context providers
-- **Initialization System**: `InitializeBuilder()` called in `main()` for class initialization with callbacks
+### Generated Files Structure
+- **lib/annotations.g.dart**: All annotation classes + convenience constants
+- **lib/builder.g.dart**: Extensions + `builderInitializer()` function
 
-## Extension Points
+### Available Annotations
+| Annotation | Generated Methods | Parameters |
+|------------|-------------------|------------|
+| `@generateToString` | `toStringGenerated()` | None |
+| `@generateEquality` | `isEqualTo()`, `generatedHashCode` | None |
+| `@jsonSerializable` | `toJson()`, `fromJson()` | `explicitToJson`, `includeIfNull` |
+| `@generateCopyWith` | `copyWith()` | None |
+| `@initializer` | Adds to `builderInitializer()` | None |
 
-### Adding New Annotations
-1. Create processor in `builder/annotations/new_annotation.dart`
-2. Extend `BaseAnnotationProcessor`
-3. Implement required methods (`annotationName`, `processAnnotation`)
-4. Add static `register()` method
-5. Register in `builder/builder.dart` `_registerAnnotations()` function
-6. Add annotation class to `builder/core/annotation_generator.dart`
+## Adding New Annotations
 
-### Adding New Features
-1. Create feature directory in `lib/features/`
-2. Follow existing pattern: `screens/`, `widgets/`, optional `providers/`
-3. Add routes to `lib/core/router/app_router.dart`
-4. Import and use design system components
+### Step-by-Step Process
+1. **Create Processor**: `builder/annotations/new_annotation.dart`
+```dart
+class NewAnnotation extends BaseAnnotationProcessor {
+  @override
+  String get annotationName => 'NewAnnotation';
+  
+  @override  
+  List<String> get annotationAliases => ['newAnnotation'];
+  
+  @override
+  String get annotationComment => '/// Description of what this does';
+  
+  @override
+  List<AnnotationParameter> get annotationParameters => [
+    // Add parameters if needed
+  ];
+  
+  static void register(AnnotationRegistry registry) {
+    registry.add(NewAnnotation());
+  }
+  
+  @override
+  String? processAnnotation(...) {
+    // Generate extension code
+  }
+}
+```
+
+2. **Register**: Add to `builder/builder.dart` in `_registerAnnotations()`
+3. **Test**: The annotation will automatically appear in generated files
+
+### Parameter Support
+For parameterized annotations:
+```dart
+@override
+List<AnnotationParameter> get annotationParameters => [
+  AnnotationParameter(
+    type: 'bool',
+    name: 'someFlag', 
+    defaultValue: 'false',
+    description: 'What this parameter does',
+  ),
+];
+```
+
+## Testing Strategy
+
+### Comprehensive Test Coverage
+- **JSON Round-Trip**: Full object → JSON string → object validation
+- **Parameter Testing**: Validates `explicitToJson` and `includeIfNull` behavior
+- **Nested Objects**: Tests complex object serialization
+- **Generated Methods**: Validates all generated extension methods
+- **Initialization System**: Tests callback-based initialization
+
+### Test Files Purpose
+- `json_serializable_test.dart`: Complete JSON serialization testing
+- `usage_test.dart`: Generated method functionality
+- `initializer_test.dart`: Initialization system with callbacks
+- `widget_test.dart`: Flutter widget integration
 
 ## Important Notes
 
-- **Generated Files**: Never edit `*.g.dart` files directly - they are overwritten
-- **Dependencies**: Builder has separate `pubspec.yaml` in `builder/` directory
-- **Import Paths**: Models import annotations from `../annotations.g.dart`
-- **Build Order**: Always run `make generate` before building/testing when models change
-- **Self-Contained**: Builder system is independent of main Flutter dependencies
+### Constraints
+- **Generated Files**: Never edit `*.g.dart` files - completely regenerated
+- **Function Names**: Use generated method names (`toStringGenerated()`, `isEqualTo()`, etc.)
+- **Build Order**: Always `make generate` after model changes
+- **Import Pattern**: Models import from `../annotations.g.dart`
+
+### Architecture Decisions
+- **Extension Methods**: Avoids source file modification
+- **Registry Pattern**: Enables dynamic, maintainable annotation system  
+- **Parameter Support**: Allows complex annotation configuration
+- **Nested Object Support**: Full serialization with `explicitToJson`
+- **Callback System**: Two-phase initialization with optional callbacks
