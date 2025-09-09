@@ -1,6 +1,12 @@
 # Flutter Annotations
 
-A Flutter application demonstrating a powerful, dynamic annotation system with automatic code generation. This project showcases a fully modular, registry-based annotation processor that generates Dart extensions at build time.
+**Example project showcasing a dynamic annotation system for Dart/Flutter with automatic code generation.**
+
+This repository contains both:
+1. **A complete Flutter app** (this directory) - demonstrating the annotation system in action
+2. **The Builder System** (`builder/` directory) - **the actual reusable project** that provides the annotation/code generation functionality
+
+The builder system is a standalone Dart tool that can be installed and used in any Dart/Flutter project to add powerful, registry-based annotation processing with automatic extension generation.
 
 ## 🚀 Features
 
@@ -28,18 +34,29 @@ A Flutter application demonstrating a powerful, dynamic annotation system with a
 
 ## 🏃‍♂️ Quick Start
 
-### Prerequisites
-- Flutter SDK (latest stable)
+### Installing the Builder System (for your own projects)
+
+To use the annotation system in your own Dart/Flutter project:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/epatel/flutter_annotations/HEAD/install.sh)"
+```
+
+This installs the builder system that you can use in any Dart/Flutter project.
+
+### Running This Example Project
+
+Prerequisites:
+- Flutter SDK (latest stable) 
 - Dart SDK 3.9.2+
 
-### Installation
 ```bash
 git clone <repository-url>
 cd flutter_annotations
 flutter pub get
 ```
 
-### Generate Code & Run
+### Generate Code & Run (Example Project)
 ```bash
 # Generate annotation extensions (required after model changes)
 make generate
@@ -157,10 +174,10 @@ void main() {
 ## 🏗️ Architecture
 
 ### High-Level Structure
-- **Flutter App**: Provider state management + GoRouter navigation + Material 3 design
-- **Annotation System**: Registry-based processors generate extensions without modifying source files
+- **Flutter App** (this directory): Provider state management + GoRouter navigation + Material 3 design - serves as the example/demo
+- **Builder System** (`builder/` directory): **The actual reusable project** - registry-based annotation processors that generate extensions without modifying source files
 - **Generated Files**: `annotations.g.dart` (annotation classes) + `builder.g.dart` (extensions)
-- **Builder System**: See [`builder/README.md`](builder/README.md) for detailed technical documentation
+- **Installation & Usage**: See [`builder/README.md`](builder/README.md) for detailed technical documentation on how to use the builder system in your own projects
 
 ### Key Design Principles
 - **Extension Methods**: Clean separation, non-intrusive code generation
@@ -188,10 +205,17 @@ dart test/equality_test.dart              # Equality and hash code contract test
 flutter test test/widget_test.dart        # Flutter widget tests
 ```
 
-## 🔧 Extending the System
+## 🔧 Using the Builder System in Your Projects
 
+### Installation
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/epatel/flutter_annotations/HEAD/install.sh)"
+```
+
+### Creating Custom Annotations
 Want to create custom annotations? See the comprehensive guide in [`builder/README.md`](builder/README.md#-adding-new-annotations) which covers:
 
+- Installing the builder system in your project
 - Creating annotation processors with parameter support
 - Registry-based self-registration
 - Code generation patterns and best practices
