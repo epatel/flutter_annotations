@@ -115,11 +115,9 @@ class CodeBuilder {
       buffer.writeln();
     }
 
-    // Generate InitializeBuilder if there are initializer classes
-    if (_initializerClasses.isNotEmpty) {
-      buffer.writeln(_generateInitializeBuilder());
-      buffer.writeln();
-    }
+    // Always generate InitializeBuilder function
+    buffer.writeln(_generateInitializeBuilder());
+    buffer.writeln();
 
     try {
       final formatter = DartFormatter(languageVersion: Version.parse('3.6.0'));
@@ -160,21 +158,26 @@ class CodeBuilder {
       '/// and executes their optional callbacks after initialization',
     );
     buffer.writeln('void builderInitializer() {');
-    buffer.writeln('  final callbacks = <Function()>[];');
-    buffer.writeln();
-    buffer.writeln('  // Call all initialize methods and collect callbacks');
-
-    for (final className in sortedClasses) {
-      final varName = '${className.toLowerCase()}Callback';
-      buffer.writeln('  final $varName = $className.initialize();');
-      buffer.writeln('  if ($varName != null) callbacks.add($varName);');
+    
+    if (_initializerClasses.isEmpty) {
+      buffer.writeln('  // No @Initializer classes found - empty implementation');
+    } else {
+      buffer.writeln('  final callbacks = <Function()>[];');
       buffer.writeln();
-    }
+      buffer.writeln('  // Call all initialize methods and collect callbacks');
 
-    buffer.writeln('  // Execute all callbacks after initialization');
-    buffer.writeln('  for (final callback in callbacks) {');
-    buffer.writeln('    callback();');
-    buffer.writeln('  }');
+      for (final className in sortedClasses) {
+        final varName = '${className.toLowerCase()}Callback';
+        buffer.writeln('  final $varName = $className.initialize();');
+        buffer.writeln('  if ($varName != null) callbacks.add($varName);');
+        buffer.writeln();
+      }
+
+      buffer.writeln('  // Execute all callbacks after initialization');
+      buffer.writeln('  for (final callback in callbacks) {');
+      buffer.writeln('    callback();');
+      buffer.writeln('  }');
+    }
     buffer.writeln('}');
 
     return buffer.toString();
