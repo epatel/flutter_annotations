@@ -156,43 +156,17 @@ void main() {
 
 ## 🏗️ Architecture
 
-### Project Structure
-```
-lib/
-├── annotations.g.dart          # Generated annotation definitions
-├── builder.g.dart              # Generated extensions and builderInitializer()
-├── main.dart                   # App entry point with initialization
-├── app.dart                    # Root app widget
-├── models/                     # Data models with annotations
-├── features/                   # Feature-based UI organization
-└── design_system/              # Theming and design tokens
+### High-Level Structure
+- **Flutter App**: Provider state management + GoRouter navigation + Material 3 design
+- **Annotation System**: Registry-based processors generate extensions without modifying source files
+- **Generated Files**: `annotations.g.dart` (annotation classes) + `builder.g.dart` (extensions)
+- **Builder System**: See [`builder/README.md`](builder/README.md) for detailed technical documentation
 
-builder/                        # Annotation processor system
-├── builder.dart               # Main entry point and orchestrator  
-├── core/
-│   ├── code_builder.dart      # AST scanning and generation logic
-│   └── annotation_generator.dart # Dynamic annotation class generation
-└── annotations/
-    ├── base_annotation.dart   # Base processor with parameter support
-    ├── registry.dart          # Central processor registry
-    ├── toString_annotation.dart
-    ├── equality_annotation.dart  
-    ├── json_annotation.dart   # With explicitToJson/includeIfNull support
-    ├── copyWith_annotation.dart
-    └── initializer_annotation.dart
-
-test/
-├── json_serializable_test.dart # Comprehensive JSON round-trip testing
-├── usage_test.dart             # Generated method functionality
-├── initializer_test.dart       # Initialization system testing
-└── widget_test.dart            # Flutter widget tests
-```
-
-### Key Design Decisions
-- **Extension Methods**: Avoids modifying source files, enables clean separation
-- **Registry Pattern**: Dynamic, self-registering processors for maintainability
-- **Parameter Support**: Enables complex annotation configuration
-- **Two-Phase Initialization**: Global initialization with optional callbacks
+### Key Design Principles
+- **Extension Methods**: Clean separation, non-intrusive code generation
+- **Registry Pattern**: Self-registering processors for maintainability
+- **Parameter Support**: Configurable annotations (JsonSerializable, etc.)
+- **Two-Phase Initialization**: Global setup with optional callbacks
 
 ## 🧪 Testing
 
@@ -216,56 +190,12 @@ flutter test test/widget_test.dart        # Flutter widget tests
 
 ## 🔧 Extending the System
 
-### Adding New Annotations
+Want to create custom annotations? See the comprehensive guide in [`builder/README.md`](builder/README.md#-adding-new-annotations) which covers:
 
-1. **Create Processor** (`builder/annotations/my_annotation.dart`):
-```dart
-class MyAnnotation extends BaseAnnotationProcessor {
-  @override
-  String get annotationName => 'MyAnnotation';
-  
-  @override  
-  List<String> get annotationAliases => ['myAnnotation'];
-  
-  @override
-  String get annotationComment => '/// My custom annotation description';
-  
-  @override
-  List<AnnotationParameter> get annotationParameters => [
-    AnnotationParameter(
-      type: 'bool',
-      name: 'someFlag',
-      defaultValue: 'false', 
-      description: 'Controls some behavior',
-    ),
-  ];
-  
-  static void register(AnnotationRegistry registry) {
-    registry.add(MyAnnotation());
-  }
-  
-  @override
-  String? processAnnotation(ClassDeclaration node, String className, String filePath, Annotation? annotation) {
-    // Generate extension code
-    return '''
-extension ${className}MyExtension on $className {
-  void myGeneratedMethod() {
-    // Generated functionality
-  }
-}''';
-  }
-}
-```
-
-2. **Register** in `builder/builder.dart`:
-```dart
-void _registerAnnotations(AnnotationRegistry registry) {
-  // ... existing registrations
-  MyAnnotation.register(registry);
-}
-```
-
-3. **Generate**: Run `make generate` and your annotation is ready to use!
+- Creating annotation processors with parameter support
+- Registry-based self-registration
+- Code generation patterns and best practices
+- Complete working examples
 
 ## 📋 Important Notes
 
