@@ -42,10 +42,14 @@ dart builder/builder.dart lib
 
 ### Test Commands
 ```bash
+# Run all unit tests efficiently
+make test_units
+
 # Run specific tests
 dart test/json_serializable_test.dart    # JSON round-trip testing
 dart test/usage_test.dart                 # Generated method usage
 dart test/initializer_test.dart           # Initialization system
+dart test/equality_test.dart              # Equality and hash code contract tests
 flutter test test/widget_test.dart        # Widget tests
 ```
 
@@ -177,11 +181,13 @@ List<AnnotationParameter> get annotationParameters => [
 - **Nested Objects**: Tests complex object serialization
 - **Generated Methods**: Validates all generated extension methods
 - **Initialization System**: Tests callback-based initialization
+- **Equality Contract**: Complete validation of reflexive, symmetric, transitive properties and hash code consistency
 
 ### Test Files Purpose
 - `json_serializable_test.dart`: Complete JSON serialization testing
 - `usage_test.dart`: Generated method functionality
 - `initializer_test.dart`: Initialization system with callbacks
+- `equality_test.dart`: Comprehensive equality and hash code contract validation
 - `widget_test.dart`: Flutter widget integration
 
 ## Important Notes

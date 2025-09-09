@@ -202,12 +202,15 @@ test/
 - **Nested Object Tests**: Complex object serialization validation
 - **Generated Method Tests**: All extension method functionality
 - **Initialization Tests**: Callback-based initialization system
+- **Equality & Hash Code Tests**: Complete equality contract validation (reflexive, symmetric, transitive)
 
 ### Run Specific Tests
 ```bash
+make test_units                           # Run all unit tests
 dart test/json_serializable_test.dart    # JSON serialization testing
 dart test/usage_test.dart                 # Generated method usage
 dart test/initializer_test.dart           # Initialization system
+dart test/equality_test.dart              # Equality and hash code contract tests
 flutter test test/widget_test.dart        # Flutter widget tests
 ```
 
