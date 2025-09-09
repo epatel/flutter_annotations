@@ -36,7 +36,7 @@ class AnnotationGenerator {
   String _generateAnnotationClass(BaseAnnotationProcessor processor) {
     final annotationName = processor.annotationName;
     final parameters = processor.annotationParameters;
-    final comment = _generateAnnotationComment(annotationName);
+    final comment = processor.annotationComment;
 
     if (parameters.isEmpty) {
       // Simple annotation without parameters
@@ -78,22 +78,6 @@ ${fieldsBuffer.toString().trimRight()}
 }''';
   }
 
-  String _generateAnnotationComment(String annotationName) {
-    switch (annotationName) {
-      case 'GenerateToString':
-        return '/// Annotation to generate toString method for a class';
-      case 'GenerateEquality':
-        return '/// Annotation to generate equality (== and hashCode) methods for a class';
-      case 'JsonSerializable':
-        return '/// Annotation to generate JSON serialization methods';
-      case 'GenerateCopyWith':
-        return '/// Annotation to generate a copyWith method for a class';
-      case 'Initializer':
-        return '/// Annotation to mark a class for inclusion in builderInitializer';
-      default:
-        return '/// Annotation for $annotationName';
-    }
-  }
 
   String _generateConvenienceConstants() {
     final buffer = StringBuffer();

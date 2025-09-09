@@ -9,6 +9,9 @@ class ToStringAnnotation extends BaseAnnotationProcessor {
   @override
   List<String> get annotationAliases => ['generateToString'];
 
+  @override
+  String get annotationComment => '/// Annotation to generate toString method for a class';
+
   /// Register this annotation processor with the registry
   static void register(AnnotationRegistry registry) {
     registry.add(ToStringAnnotation());

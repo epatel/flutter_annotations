@@ -25,6 +25,9 @@ class JsonAnnotation extends BaseAnnotationProcessor {
     ),
   ];
 
+  @override
+  String get annotationComment => '/// Annotation to generate JSON serialization methods';
+
   /// Register this annotation processor with the registry
   static void register(AnnotationRegistry registry) {
     registry.add(JsonAnnotation());

@@ -9,6 +9,9 @@ class EqualityAnnotation extends BaseAnnotationProcessor {
   @override
   List<String> get annotationAliases => ['generateEquality'];
 
+  @override
+  String get annotationComment => '/// Annotation to generate equality (== and hashCode) methods for a class';
+
   /// Register this annotation processor with the registry
   static void register(AnnotationRegistry registry) {
     registry.add(EqualityAnnotation());

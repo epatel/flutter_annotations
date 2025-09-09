@@ -26,6 +26,9 @@ abstract class BaseAnnotationProcessor {
   
   /// Parameters for the annotation class (empty for simple annotations)
   List<AnnotationParameter> get annotationParameters => [];
+  
+  /// Documentation comment for the annotation class
+  String get annotationComment;
 
   /// Check if this processor can handle the given annotation name
   bool canProcess(String annotationName) {
