@@ -23,7 +23,7 @@ class CodeBuilder {
     _scanDirectory(sourceDir);
 
     // Generate annotations.g.dart
-    final annotationGenerator = AnnotationGenerator();
+    final annotationGenerator = AnnotationGenerator(_registry);
     final annotationsPath = path.join(sourceDir, 'annotations.g.dart');
     annotationGenerator.writeAnnotationsFile(annotationsPath);
 
