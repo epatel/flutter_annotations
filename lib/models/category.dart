@@ -1,4 +1,5 @@
-import '../annotations.g.dart';
+import 'package:flutter_annotations/annotations.g.dart';
+import 'package:flutter_annotations/builder.g.dart';
 
 @JsonSerializable()
 @GenerateToString()
@@ -12,4 +13,7 @@ class Category {
     required this.name,
     this.description,
   });
+
+  @override
+  String toString() => toStringGenerated();
 }

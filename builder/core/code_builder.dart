@@ -3,6 +3,7 @@ import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:dart_style/dart_style.dart';
+import 'package:pub_semver/pub_semver.dart';
 import 'package:path/path.dart' as path;
 import '../annotations/registry.dart';
 import 'annotation_generator.dart';
@@ -121,7 +122,7 @@ class CodeBuilder {
     }
 
     try {
-      final formatter = DartFormatter();
+      final formatter = DartFormatter(languageVersion: Version.parse('3.6.0'));
       return formatter.format(buffer.toString());
     } catch (e) {
       print('⚠️  Warning: Could not format generated code: $e');
@@ -140,7 +141,7 @@ class CodeBuilder {
     buffer.writeln();
 
     try {
-      final formatter = DartFormatter();
+      final formatter = DartFormatter(languageVersion: Version.parse('3.6.0'));
       return formatter.format(buffer.toString());
     } catch (e) {
       print('⚠️  Warning: Could not format empty file: $e');

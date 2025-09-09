@@ -43,14 +43,16 @@ void main(List<String> arguments) {
 /// Register all annotation processors with the registry
 void _registerAnnotations(AnnotationRegistry registry) {
   print('📋 Registering annotation processors...');
-  
+
   // Self-registering annotations
   ToStringAnnotation.register(registry);
   EqualityAnnotation.register(registry);
   JsonAnnotation.register(registry);
   CopyWithAnnotation.register(registry);
   InitializerAnnotation.register(registry);
-  
+
   final supportedAnnotations = registry.getSupportedAnnotations();
-  print('✅ Registered ${registry.processors.length} processors for annotations: ${supportedAnnotations.join(', ')}');
+  print(
+    '✅ Registered ${registry.processors.length} processors for annotations: ${supportedAnnotations.join(', ')}',
+  );
 }

@@ -10,7 +10,8 @@ class InitializerAnnotation extends BaseAnnotationProcessor {
   List<String> get annotationAliases => ['initializer'];
 
   @override
-  String get annotationComment => '/// Annotation to mark a class for inclusion in builderInitializer';
+  String get annotationComment =>
+      '/// Annotation to mark a class for inclusion in builderInitializer';
 
   /// Register this annotation processor with the registry
   static void register(AnnotationRegistry registry) {

@@ -10,7 +10,8 @@ class ToStringAnnotation extends BaseAnnotationProcessor {
   List<String> get annotationAliases => ['generateToString'];
 
   @override
-  String get annotationComment => '/// Annotation to generate toString method for a class';
+  String get annotationComment =>
+      '/// Annotation to generate toString method for a class';
 
   /// Register this annotation processor with the registry
   static void register(AnnotationRegistry registry) {
@@ -18,12 +19,17 @@ class ToStringAnnotation extends BaseAnnotationProcessor {
   }
 
   @override
-  String? processAnnotation(ClassDeclaration node, String className, String filePath, Annotation? annotation) {
+  String? processAnnotation(
+    ClassDeclaration node,
+    String className,
+    String filePath,
+    Annotation? annotation,
+  ) {
     final fields = getClassFields(node);
     if (fields.isEmpty) return null;
 
     final fieldsString = fields.map((f) => '${f.name}: \$${f.name}').join(', ');
-    
+
     return '''
 extension ${className}ToString on $className {
   String toStringGenerated() {

@@ -10,7 +10,8 @@ class AnnotationRegistry {
   }
 
   /// Get all registered processors
-  List<BaseAnnotationProcessor> get processors => List.unmodifiable(_processors);
+  List<BaseAnnotationProcessor> get processors =>
+      List.unmodifiable(_processors);
 
   /// Find a processor that can handle the given annotation name
   BaseAnnotationProcessor? findProcessor(String annotationName) {

@@ -5,7 +5,12 @@ import 'package:flutter_annotations/builder.g.dart';
 
 void main() {
   // Test User with generated extensions
-  final user = User(name: 'John Doe', age: 30, email: 'john@example.com', isActive: true);
+  final user = User(
+    name: 'John Doe',
+    age: 30,
+    email: 'john@example.com',
+    isActive: true,
+  );
 
   print('Generated toString: ${user.toStringGenerated()}');
 
@@ -21,7 +26,12 @@ void main() {
   print('User from JSON: ${userFromJson.toStringGenerated()}');
 
   // Test equality
-  final user2 = User(name: 'John Doe', age: 30, email: 'john@example.com', isActive: true);
+  final user2 = User(
+    name: 'John Doe',
+    age: 30,
+    email: 'john@example.com',
+    isActive: true,
+  );
   print('Users equal: ${user.isEqualTo(user2)}');
   print('User hashCode: ${user.generatedHashCode}');
 

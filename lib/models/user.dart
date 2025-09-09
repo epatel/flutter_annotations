@@ -1,4 +1,5 @@
-import '../annotations.g.dart';
+import 'package:flutter_annotations/annotations.g.dart';
+import 'package:flutter_annotations/builder.g.dart';
 
 @initializer
 @generateToString
@@ -23,4 +24,7 @@ class User {
     // No callback needed for User
     return null;
   }
+
+  @override
+  String toString() => toStringGenerated();
 }

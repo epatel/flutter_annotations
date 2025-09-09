@@ -10,7 +10,8 @@ class CopyWithAnnotation extends BaseAnnotationProcessor {
   List<String> get annotationAliases => ['generateCopyWith'];
 
   @override
-  String get annotationComment => '/// Annotation to generate a copyWith method for a class';
+  String get annotationComment =>
+      '/// Annotation to generate a copyWith method for a class';
 
   /// Register this annotation processor with the registry
   static void register(AnnotationRegistry registry) {
@@ -18,12 +19,19 @@ class CopyWithAnnotation extends BaseAnnotationProcessor {
   }
 
   @override
-  String? processAnnotation(ClassDeclaration node, String className, String filePath, Annotation? annotation) {
+  String? processAnnotation(
+    ClassDeclaration node,
+    String className,
+    String filePath,
+    Annotation? annotation,
+  ) {
     final fields = getClassFields(node);
     if (fields.isEmpty) return null;
 
     final params = fields.map((f) => '${f.type}? ${f.name}').join(', ');
-    final assignments = fields.map((f) => '${f.name}: ${f.name} ?? this.${f.name}').join(', ');
+    final assignments = fields
+        .map((f) => '${f.name}: ${f.name} ?? this.${f.name}')
+        .join(', ');
 
     return '''
 extension ${className}CopyWith on $className {

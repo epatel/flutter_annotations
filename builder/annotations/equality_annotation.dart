@@ -10,7 +10,8 @@ class EqualityAnnotation extends BaseAnnotationProcessor {
   List<String> get annotationAliases => ['generateEquality'];
 
   @override
-  String get annotationComment => '/// Annotation to generate equality (== and hashCode) methods for a class';
+  String get annotationComment =>
+      '/// Annotation to generate equality (== and hashCode) methods for a class';
 
   /// Register this annotation processor with the registry
   static void register(AnnotationRegistry registry) {
@@ -18,11 +19,18 @@ class EqualityAnnotation extends BaseAnnotationProcessor {
   }
 
   @override
-  String? processAnnotation(ClassDeclaration node, String className, String filePath, Annotation? annotation) {
+  String? processAnnotation(
+    ClassDeclaration node,
+    String className,
+    String filePath,
+    Annotation? annotation,
+  ) {
     final fields = getClassFields(node);
     if (fields.isEmpty) return null;
 
-    final equalityChecks = fields.map((f) => '${f.name} == other.${f.name}').join(' && ');
+    final equalityChecks = fields
+        .map((f) => '${f.name} == other.${f.name}')
+        .join(' && ');
     final hashCodeFields = fields.map((f) => f.name).join(', ');
 
     return '''

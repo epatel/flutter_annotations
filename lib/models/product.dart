@@ -1,8 +1,10 @@
-import '../annotations.g.dart';
+import 'package:flutter_annotations/annotations.g.dart';
+import 'package:flutter_annotations/builder.g.dart';
+
 import 'category.dart';
 
 @Initializer()
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true, includeIfNull: false)
 @GenerateToString()
 class Product {
   final String id;
@@ -25,4 +27,7 @@ class Product {
       print('Product post-initialization callback executed');
     };
   }
+
+  @override
+  String toString() => toStringGenerated();
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:dart_style/dart_style.dart';
+import 'package:pub_semver/pub_semver.dart';
 import '../annotations/registry.dart';
 import '../annotations/base_annotation.dart';
 
@@ -25,7 +26,7 @@ class AnnotationGenerator {
     buffer.writeln(_generateConvenienceConstants());
 
     try {
-      final formatter = DartFormatter();
+      final formatter = DartFormatter(languageVersion: Version.parse('3.6.0'));
       return formatter.format(buffer.toString());
     } catch (e) {
       print('⚠️  Warning: Could not format annotations file: $e');
@@ -49,7 +50,6 @@ class $annotationName {
 
     // Annotation with parameters
     final fieldsBuffer = StringBuffer();
-    final constructorBuffer = StringBuffer();
 
     // Generate final fields
     for (final param in parameters) {
@@ -77,7 +77,6 @@ ${fieldsBuffer.toString().trimRight()}
   });
 }''';
   }
-
 
   String _generateConvenienceConstants() {
     final buffer = StringBuffer();
