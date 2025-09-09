@@ -1,4 +1,4 @@
-import '../lib/builder.g.dart';
+import 'package:flutter_annotations/builder.g.dart';
 
 void main() {
   print('=== Testing InitializeBuilder ===');
