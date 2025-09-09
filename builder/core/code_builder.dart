@@ -224,6 +224,7 @@ class AnnotationVisitor extends RecursiveAstVisitor<void> {
             node,
             className,
             filePath,
+            metadata,
           );
           if (generatedCode != null) {
             builder.addGeneratedCode(generatedCode);

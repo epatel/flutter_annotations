@@ -18,7 +18,7 @@ class ToStringAnnotation extends BaseAnnotationProcessor {
   }
 
   @override
-  String? processAnnotation(ClassDeclaration node, String className, String filePath) {
+  String? processAnnotation(ClassDeclaration node, String className, String filePath, Annotation? annotation) {
     final fields = getClassFields(node);
     if (fields.isEmpty) return null;
 

@@ -22,6 +22,7 @@ class InitializerAnnotation extends BaseAnnotationProcessor {
     ClassDeclaration node,
     String className,
     String filePath,
+    Annotation? annotation,
   ) {
     // The InitializerAnnotation processor doesn't generate extensions
     // It only tracks classes for the InitializeBuilder function

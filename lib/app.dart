@@ -10,7 +10,9 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => CounterProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => CounterProvider()),
+      ],
       child: MaterialApp.router(
         title: 'Flutter Annotations',
         theme: AppTheme.lightTheme,

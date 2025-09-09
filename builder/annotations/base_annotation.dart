@@ -37,7 +37,7 @@ abstract class BaseAnnotationProcessor {
   }
 
   /// Process the annotation and generate code
-  String? processAnnotation(ClassDeclaration node, String className, String filePath);
+  String? processAnnotation(ClassDeclaration node, String className, String filePath, Annotation? annotation);
 
   /// Extract class fields from a ClassDeclaration
   List<FieldInfo> getClassFields(ClassDeclaration node) {

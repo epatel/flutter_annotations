@@ -1,4 +1,5 @@
 import '../annotations.g.dart';
+import 'category.dart';
 
 @Initializer()
 @JsonSerializable()
@@ -8,12 +9,14 @@ class Product {
   final String name;
   final double price;
   final String? description;
+  final Category category;
 
   const Product({
     required this.id,
     required this.name,
     required this.price,
     this.description,
+    required this.category,
   });
 
   static Function()? initialize() {
