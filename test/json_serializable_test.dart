@@ -70,7 +70,7 @@ void main() {
     isActive: true,
   );
 
-  print('Original User: ${user}');
+  print('Original User: $user');
 
   final userMap = user.toJson();
   final userJsonString = jsonEncode(userMap);
@@ -112,7 +112,7 @@ void main() {
   print('Parsed Map from JSON: $productMapFromJson');
 
   final productFromJson = ProductJson.fromJson(productMapFromJson);
-  print('Product from JSON: ${productFromJson}');
+  print('Product from JSON: $productFromJson');
 
   // Verify full round-trip success
   final roundTripSuccess =

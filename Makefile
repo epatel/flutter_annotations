@@ -21,7 +21,7 @@ reset:
 	flutter clean && flutter pub get
 
 format:
-	dart format .
+	dart format lib/ test/ builder/
 
 test:
 	flutter test
