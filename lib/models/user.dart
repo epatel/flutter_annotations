@@ -27,4 +27,10 @@ class User {
 
   @override
   String toString() => toStringGenerated();
+
+  @override
+  bool operator ==(Object other) => isEqualTo(other);
+
+  @override
+  int get hashCode => generatedHashCode;
 }
