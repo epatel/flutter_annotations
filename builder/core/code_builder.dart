@@ -32,16 +32,12 @@ class CodeBuilder {
     final builderPath = path.join(sourceDir, 'builder.g.dart');
     if (_generatedCode.isEmpty && _initializerClasses.isEmpty) {
       print('⚠️  No annotations found to generate extensions for');
-      // Still create an empty builder.g.dart file
-      final emptyOutput = _buildEmptyOutputFile();
-      File(builderPath).writeAsStringSync(emptyOutput);
-    } else {
-      final output = _buildOutputFile();
-      File(builderPath).writeAsStringSync(output);
-      final totalSections =
-          _generatedCode.length + (_initializerClasses.isNotEmpty ? 1 : 0);
-      print('✅ Generated $totalSections code sections');
     }
+    final output = _buildOutputFile();
+    File(builderPath).writeAsStringSync(output);
+    final totalSections =
+        _generatedCode.length + (_initializerClasses.isNotEmpty ? 1 : 0);
+    print('✅ Generated $totalSections code sections');
 
     print('📄 Generated files:');
     print('  • $annotationsPath');
@@ -100,12 +96,12 @@ class CodeBuilder {
     buffer.writeln();
 
     // Imports
-    buffer.writeln('// ignore_for_file: unused_import');
-    final sortedImports = _imports.toSet().toList()..sort();
-    for (final import in sortedImports) {
-      buffer.writeln(import);
-    }
-    if (sortedImports.isNotEmpty) {
+    if (_imports.isNotEmpty) {
+      buffer.writeln('// ignore_for_file: unused_import');
+      final sortedImports = _imports.toSet().toList()..sort();
+      for (final import in sortedImports) {
+        buffer.writeln(import);
+      }
       buffer.writeln();
     }
 
@@ -158,9 +154,11 @@ class CodeBuilder {
       '/// and executes their optional callbacks after initialization',
     );
     buffer.writeln('void builderInitializer() {');
-    
+
     if (_initializerClasses.isEmpty) {
-      buffer.writeln('  // No @Initializer classes found - empty implementation');
+      buffer.writeln(
+        '  // No @Initializer classes found - empty implementation',
+      );
     } else {
       buffer.writeln('  final callbacks = <Function()>[];');
       buffer.writeln();
