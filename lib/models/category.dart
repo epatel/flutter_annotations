@@ -3,6 +3,7 @@ import 'package:flutter_annotations/builder.g.dart';
 
 @JsonSerializable()
 @GenerateToString()
+@GenerateCopyWith()
 class Category {
   final String id;
   final String name;

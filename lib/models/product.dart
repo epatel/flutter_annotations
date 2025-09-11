@@ -6,6 +6,7 @@ import 'category.dart';
 @Initializer()
 @JsonSerializable(explicitToJson: true, includeIfNull: false)
 @GenerateToString()
+@GenerateCopyWith()
 class Product {
   final String id;
   final String name;

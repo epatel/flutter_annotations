@@ -28,7 +28,10 @@ class CopyWithAnnotation extends BaseAnnotationProcessor {
     final fields = getClassFields(node);
     if (fields.isEmpty) return null;
 
-    final params = fields.map((f) => '${f.type}? ${f.name}').join(', ');
+        final params = fields.map((f) {
+      final nonNullableType = f.type.endsWith('?') ? f.type.substring(0, f.type.length - 1) : f.type;
+      return '${nonNullableType}? ${f.name}';
+    }).join(', ');
     final assignments = fields
         .map((f) => '${f.name}: ${f.name} ?? this.${f.name}')
         .join(', ');
