@@ -149,15 +149,15 @@ final category = Category(id: 'electronics', name: 'Electronics');
 final product = Product(id: '123', name: 'Laptop', price: 999.99, category: category);
 
 // Use generated methods
-print(user.toStringGenerated());           // Debug string
-print(user.isEqualTo(otherUser));         // Value equality
-print(user.generatedHashCode);            // Hash code
+print(user.toStringGenerated());            // Debug string
+print(user.isEqualTo(otherUser));           // Value equality
+print(user.generatedHashCode);              // Hash code
 
-final userJson = user.toJson();           // Serialize to Map
-final userCopy = user.copyWith(age: 29);  // Immutable copy
+final userJson = user.toJson();             // Serialize to Map
+final userCopy = user.copyWith(age: 29);    // Immutable copy
 
 // JSON serialization with nested objects
-final productJson = product.toJson();     // Calls category.toJson() due to explicitToJson: true
+final productJson = product.toJson();       // Calls category.toJson() due to explicitToJson: true
 final jsonString = jsonEncode(productJson); // Full JSON string
 final productFromJson = ProductJson.fromJson(jsonDecode(jsonString)); // Round-trip!
 ```
@@ -198,7 +198,7 @@ void main() {
 ### Run Specific Tests
 ```bash
 make test_units                           # Run all unit tests
-dart test/json_serializable_test.dart    # JSON serialization testing
+dart test/json_serializable_test.dart     # JSON serialization testing
 dart test/usage_test.dart                 # Generated method usage
 dart test/initializer_test.dart           # Initialization system
 dart test/equality_test.dart              # Equality and hash code contract tests
