@@ -51,8 +51,12 @@ void _registerAnnotations(AnnotationRegistry registry) {
   CopyWithAnnotation.register(registry);
   InitializerAnnotation.register(registry);
 
-  final supportedAnnotations = registry.getSupportedAnnotations();
   print(
-    '✅ Registered ${registry.processors.length} processors for annotations: ${supportedAnnotations.join(', ')}',
+    '✅ Registered ${registry.processors.length} processors for annotations:',
   );
+  for (final processor in registry.processors) {
+    print(
+      '  • @${processor.annotationName}(), [ ${processor.annotationAliases.map((e) => '@$e').join(', ')} ]',
+    );
+  }
 }

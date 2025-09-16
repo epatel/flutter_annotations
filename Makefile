@@ -44,7 +44,7 @@ build:
 	flutter build web
 
 run:
-	flutter run --debug
+	flutter run --debug -d chrome
 
 generate:
 	dart builder/builder.dart lib

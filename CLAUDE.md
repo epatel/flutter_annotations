@@ -34,23 +34,33 @@ make run              # Flutter app in debug mode
 make test             # All tests including JSON round-trip tests
 make format           # Format lib/ test/ builder/ directories  
 make analyze          # Static analysis
+make build            # Build for web (includes clean)
 make reset            # Clean and reinstall dependencies
 
 # Manual code generation
 dart builder/builder.dart lib
+
+# Interactive menu (shows all available commands)
+make menu
+make select           # Interactive command selection
 ```
 
 ### Test Commands
 ```bash
+# Run all tests (Flutter and Dart)
+make test
+
 # Run all unit tests efficiently
 make test_units
 
 # Run specific tests
-dart test/json_serializable_test.dart    # JSON round-trip testing
+dart test/json_serializable_test.dart     # JSON round-trip testing
 dart test/usage_test.dart                 # Generated method usage
 dart test/initializer_test.dart           # Initialization system
 dart test/equality_test.dart              # Equality and hash code contract tests
-flutter test test/widget_test.dart        # Widget tests
+dart test/copywith_test.dart              # CopyWith functionality tests
+dart test/tostring_test.dart              # ToString generation tests
+flutter test test/widget_test.dart        # Flutter widget tests
 ```
 
 ## Code Generation System
@@ -109,8 +119,15 @@ class Product {
 - `builder/builder.dart`: Main orchestrator with self-registering processors
 - `builder/core/code_builder.dart`: AST scanning and generation logic
 - `builder/core/annotation_generator.dart`: Dynamic annotation class generation
+- `builder/core/field_info.dart`: Field metadata and analysis utilities
 - `builder/annotations/base_annotation.dart`: Base processor with parameter support
 - `builder/annotations/registry.dart`: Central processor registry
+- Individual annotation processors:
+  - `builder/annotations/json_annotation.dart`: JSON serialization processor
+  - `builder/annotations/toString_annotation.dart`: ToString generation processor
+  - `builder/annotations/equality_annotation.dart`: Equality and hash code processor
+  - `builder/annotations/copyWith_annotation.dart`: CopyWith method processor
+  - `builder/annotations/initializer_annotation.dart`: Initialization system processor
 
 ### Generated Files Structure
 - **lib/annotations.g.dart**: All annotation classes + convenience constants
@@ -188,6 +205,8 @@ List<AnnotationParameter> get annotationParameters => [
 - `usage_test.dart`: Generated method functionality
 - `initializer_test.dart`: Initialization system with callbacks
 - `equality_test.dart`: Comprehensive equality and hash code contract validation
+- `copywith_test.dart`: CopyWith method generation tests
+- `tostring_test.dart`: ToString method generation tests
 - `widget_test.dart`: Flutter widget integration
 
 ## Important Notes
@@ -197,6 +216,8 @@ List<AnnotationParameter> get annotationParameters => [
 - **Function Names**: Use generated method names (`toStringGenerated()`, `isEqualTo()`, etc.)
 - **Build Order**: Always `make generate` after model changes
 - **Import Pattern**: Models import from `../annotations.g.dart`
+- **Linting**: Uses `flutter_lints` package with `avoid_print: false` configuration
+- **Formatting**: Preserves trailing commas as configured in `analysis_options.yaml`
 
 ### Architecture Decisions
 - **Extension Methods**: Avoids source file modification
@@ -204,3 +225,9 @@ List<AnnotationParameter> get annotationParameters => [
 - **Parameter Support**: Allows complex annotation configuration
 - **Nested Object Support**: Full serialization with `explicitToJson`
 - **Callback System**: Two-phase initialization with optional callbacks
+
+# important-instruction-reminders
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
