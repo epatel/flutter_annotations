@@ -200,6 +200,13 @@ class AnnotationVisitor extends RecursiveAstVisitor<void> {
         if (annotationName == 'Initializer' ||
             annotationName == 'initializer') {
           builder.addInitializerClass(className);
+          // Also call processAnnotation for Initializer to print extended class info
+          processor.processAnnotation(
+            node,
+            className,
+            filePath,
+            metadata,
+          );
           hasAnnotations = true;
         } else {
           // Handle other annotations that generate code

@@ -38,7 +38,9 @@ void main() {
     });
 
     test('copyWith can chain multiple calls', () {
-      final updatedUser = originalUser.copyWith(age: 35).copyWith(name: 'John Smith');
+      final updatedUser = originalUser
+          .copyWith(age: 35)
+          .copyWith(name: 'John Smith');
       expect(updatedUser.name, 'John Smith');
       expect(updatedUser.age, 35);
       expect(updatedUser.email, originalUser.email);

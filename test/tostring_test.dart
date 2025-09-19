@@ -43,7 +43,10 @@ void main() {
       expect(productString, contains('price: 699.99'));
       expect(productString, contains('description: A smart device'));
       // Check if the nested object's toString is included
-      expect(productString, contains('category: ${category.toStringGenerated()}'));
+      expect(
+        productString,
+        contains('category: ${category.toStringGenerated()}'),
+      );
     });
 
     test('Category toStringGenerated handles null fields', () {
