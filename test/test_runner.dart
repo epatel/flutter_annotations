@@ -22,14 +22,14 @@ class TestResult {
   });
 
   Map<String, dynamic> toJson() => {
-        'fileName': fileName,
-        'testType': testType,
-        'passed': passed,
-        'failed': failed,
-        'executionTime': executionTime,
-        'success': success,
-        'errorMessage': errorMessage,
-      };
+    'fileName': fileName,
+    'testType': testType,
+    'passed': passed,
+    'failed': failed,
+    'executionTime': executionTime,
+    'success': success,
+    'errorMessage': errorMessage,
+  };
 }
 
 class TestSummary {
@@ -48,14 +48,14 @@ class TestSummary {
   });
 
   Map<String, dynamic> toJson() => {
-        'results': results.map((r) => r.toJson()).toList(),
-        'summary': {
-          'totalPassed': totalPassed,
-          'totalFailed': totalFailed,
-          'totalTime': totalTime,
-          'allPassed': allPassed,
-        },
-      };
+    'results': results.map((r) => r.toJson()).toList(),
+    'summary': {
+      'totalPassed': totalPassed,
+      'totalFailed': totalFailed,
+      'totalTime': totalTime,
+      'allPassed': allPassed,
+    },
+  };
 }
 
 class TestRunner {
@@ -88,9 +88,11 @@ class TestRunner {
       results.add(result);
 
       if (verbose) {
-        print('  Result: ${result.success ? "PASS" : "FAIL"} '
-            '(${result.passed} passed, ${result.failed} failed, '
-            '${result.executionTime.toStringAsFixed(2)}s)\n');
+        print(
+          '  Result: ${result.success ? "PASS" : "FAIL"} '
+          '(${result.passed} passed, ${result.failed} failed, '
+          '${result.executionTime.toStringAsFixed(2)}s)\n',
+        );
       }
     }
 
@@ -121,9 +123,10 @@ class TestRunner {
 
         // Determine test type based on content
         final content = await entity.readAsString();
-        final isFlutterTest = content.contains('flutter_test') ||
-                             content.contains('testWidgets') ||
-                             content.contains('WidgetTester');
+        final isFlutterTest =
+            content.contains('flutter_test') ||
+            content.contains('testWidgets') ||
+            content.contains('WidgetTester');
 
         final testType = isFlutterTest ? 'Flutter' : 'Dart';
 
@@ -141,7 +144,8 @@ class TestRunner {
   }
 
   Future<TestResult> _runSingleTest(
-      ({String fileName, String testType}) testFile) async {
+    ({String fileName, String testType}) testFile,
+  ) async {
     final stopwatch = Stopwatch()..start();
 
     try {
@@ -175,7 +179,9 @@ class TestRunner {
         for (final line in lines) {
           if (line.contains('All tests passed!')) {
             // Count tests from summary line
-            final testCountMatch = RegExp(r'(\d+) tests? passed').firstMatch(output);
+            final testCountMatch = RegExp(
+              r'(\d+) tests? passed',
+            ).firstMatch(output);
             if (testCountMatch != null) {
               passed = int.parse(testCountMatch.group(1)!);
             } else {
@@ -244,13 +250,19 @@ class TestRunner {
     const int timeWidth = 8;
 
     // Top border
-    print('╔${'═' * fileNameWidth}╤${'═' * typeWidth}╤${'═' * passedWidth}╤${'═' * failedWidth}╤${'═' * timeWidth}╤${'═' * statusWidth}╗');
+    print(
+      '╔${'═' * fileNameWidth}╤${'═' * typeWidth}╤${'═' * passedWidth}╤${'═' * failedWidth}╤${'═' * timeWidth}╤${'═' * statusWidth}╗',
+    );
 
     // Header
-    print('║${'Test File'.padRight(fileNameWidth)}│${'Type'.padRight(typeWidth)}│${'Passed'.padRight(passedWidth)}│${'Failed'.padRight(failedWidth)}│${'Time(s)'.padRight(timeWidth)}│${'Status'.padRight(statusWidth)}║');
+    print(
+      '║${'Test File'.padRight(fileNameWidth)}│${'Type'.padRight(typeWidth)}│${'Passed'.padRight(passedWidth)}│${'Failed'.padRight(failedWidth)}│${'Time(s)'.padRight(timeWidth)}│${'Status'.padRight(statusWidth)}║',
+    );
 
     // Header separator
-    print('╠${'═' * fileNameWidth}╪${'═' * typeWidth}╪${'═' * passedWidth}╪${'═' * failedWidth}╪${'═' * timeWidth}╪${'═' * statusWidth}╣');
+    print(
+      '╠${'═' * fileNameWidth}╪${'═' * typeWidth}╪${'═' * passedWidth}╪${'═' * failedWidth}╪${'═' * timeWidth}╪${'═' * statusWidth}╣',
+    );
 
     // Data rows
     for (final result in summary.results) {
@@ -261,18 +273,26 @@ class TestRunner {
       final passed = result.passed.toString().padRight(passedWidth);
       final failed = result.failed.toString().padRight(failedWidth);
       final time = result.executionTime.toStringAsFixed(2).padRight(timeWidth);
-      final status = (result.success ? '✅ PASS' : '❌ FAIL').padRight(statusWidth);
+      final status = (result.success ? '✅ PASS' : '❌ FAIL').padRight(
+        statusWidth - 1,
+      );
 
       print('║$fileName│$type│$passed│$failed│$time│$status║');
     }
 
     // Bottom border
-    print('╚${'═' * fileNameWidth}╧${'═' * typeWidth}╧${'═' * passedWidth}╧${'═' * failedWidth}╧${'═' * timeWidth}╧${'═' * statusWidth}╝');
+    print(
+      '╚${'═' * fileNameWidth}╧${'═' * typeWidth}╧${'═' * passedWidth}╧${'═' * failedWidth}╧${'═' * timeWidth}╧${'═' * statusWidth}╝',
+    );
 
     // Summary
-    print('\nSummary: ${summary.totalPassed} tests passed, ${summary.totalFailed} failed');
+    print(
+      '\nSummary: ${summary.totalPassed} tests passed, ${summary.totalFailed} failed',
+    );
     print('Total execution time: ${summary.totalTime.toStringAsFixed(2)}s');
-    print('Overall result: ${summary.allPassed ? '✅ ALL TESTS PASSED' : '❌ SOME TESTS FAILED'}');
+    print(
+      'Overall result: ${summary.allPassed ? '✅ ALL TESTS PASSED' : '❌ SOME TESTS FAILED'}',
+    );
 
     // Error details for failed tests
     final failedTests = summary.results.where((r) => !r.success).toList();
@@ -289,7 +309,9 @@ class TestRunner {
     for (final result in summary.results) {
       final status = result.success ? 'PASS' : 'FAIL';
       final errorMsg = result.errorMessage?.replaceAll(',', ';') ?? '';
-      print('${result.fileName},${result.testType},${result.passed},${result.failed},${result.executionTime},$status,"$errorMsg"');
+      print(
+        '${result.fileName},${result.testType},${result.passed},${result.failed},${result.executionTime},$status,"$errorMsg"',
+      );
     }
   }
 }
@@ -299,25 +321,35 @@ void main(List<String> arguments) async {
     ..addFlag('verbose', abbr: 'v', help: 'Show detailed output')
     ..addFlag('dart-only', help: 'Run only Dart tests')
     ..addFlag('flutter-only', help: 'Run only Flutter tests')
-    ..addOption('format',
-        abbr: 'f',
-        defaultsTo: 'table',
-        allowed: ['table', 'json', 'csv'],
-        help: 'Output format')
+    ..addOption(
+      'format',
+      abbr: 'f',
+      defaultsTo: 'table',
+      allowed: ['table', 'json', 'csv'],
+      help: 'Output format',
+    )
     ..addFlag('help', abbr: 'h', help: 'Show help');
 
   try {
     final results = parser.parse(arguments);
 
     if (results['help']) {
-      print('Test Runner - Aggregate and display test results in a table format\n');
+      print(
+        'Test Runner - Aggregate and display test results in a table format\n',
+      );
       print('Usage: dart test/test_runner.dart [options]\n');
       print(parser.usage);
       print('\nExamples:');
-      print('  dart test/test_runner.dart                    # Run all tests with table output');
-      print('  dart test/test_runner.dart --dart-only        # Run only Dart tests');
+      print(
+        '  dart test/test_runner.dart                    # Run all tests with table output',
+      );
+      print(
+        '  dart test/test_runner.dart --dart-only        # Run only Dart tests',
+      );
       print('  dart test/test_runner.dart --format json      # Output as JSON');
-      print('  dart test/test_runner.dart --verbose          # Show detailed output');
+      print(
+        '  dart test/test_runner.dart --verbose          # Show detailed output',
+      );
       return;
     }
 
