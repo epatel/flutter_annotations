@@ -32,7 +32,9 @@ make generate
 # Development
 make run              # Flutter app in debug mode
 make test             # All tests including JSON round-trip tests
-make format           # Format lib/ test/ builder/ directories  
+make test_table       # All tests with formatted table results
+make test_json        # All tests with JSON output for CI/CD
+make format           # Format lib/ test/ builder/ directories
 make analyze          # Static analysis
 make build            # Build for web (includes clean)
 make reset            # Clean and reinstall dependencies
@@ -53,14 +55,22 @@ make test
 # Run all unit tests efficiently
 make test_units
 
+# Test result aggregation with formatted output
+make test_table                                # All tests with formatted table
+make test_json                                 # All tests with JSON output
+dart test/test_runner.dart --dart-only         # Run only Dart tests
+dart test/test_runner.dart --flutter-only      # Run only Flutter tests
+dart test/test_runner.dart --verbose           # Show detailed output
+dart test/test_runner.dart --format csv        # Export as CSV
+
 # Run specific tests
-dart test/json_serializable_test.dart     # JSON round-trip testing
-dart test/usage_test.dart                 # Generated method usage
-dart test/initializer_test.dart           # Initialization system
-dart test/equality_test.dart              # Equality and hash code contract tests
-dart test/copywith_test.dart              # CopyWith functionality tests
-dart test/tostring_test.dart              # ToString generation tests
-flutter test test/widget_test.dart        # Flutter widget tests
+dart test test/json_serializable_test.dart     # JSON round-trip testing
+dart test test/usage_test.dart                 # Generated method usage
+dart test test/initializer_test.dart           # Initialization system
+dart test test/equality_test.dart              # Equality and hash code contract tests
+dart test test/copywith_test.dart              # CopyWith functionality tests
+dart test test/tostring_test.dart              # ToString generation tests
+flutter test test/widget_test.dart             # Flutter widget tests
 ```
 
 ## Code Generation System
@@ -81,7 +91,8 @@ The system generates extension methods with specific naming to avoid conflicts:
 
 ### Annotation Usage Examples
 ```dart
-import '../annotations.g.dart';
+import 'package:flutter_annotations/annotations.g.dart';
+import 'package:flutter_annotations/builder.g.dart';
 import 'category.dart';
 
 @Initializer()
@@ -94,11 +105,22 @@ class Product {
   final String? description;
   final Category category;  // Nested object
 
+  const Product({
+    required this.id,
+    required this.name,
+    required this.price,
+    this.description,
+    required this.category,
+  });
+
   // Required for @Initializer classes
   static Function()? initialize() {
     print('Initializing Product...');
     return () => print('Product post-init callback');
   }
+
+  @override
+  String toString() => toStringGenerated();
 }
 ```
 
@@ -208,6 +230,35 @@ List<AnnotationParameter> get annotationParameters => [
 - `copywith_test.dart`: CopyWith method generation tests
 - `tostring_test.dart`: ToString method generation tests
 - `widget_test.dart`: Flutter widget integration
+- `test_runner.dart`: Test aggregation and result formatting tool
+
+### Test Result Aggregation
+The project includes a comprehensive test runner that aggregates results from all tests and presents them in a formatted table:
+
+```bash
+# Example output from make test_table:
+╔═════════════════════════╤════════╤══════╤══════╤════════╤═════════╗
+║Test File                │Type    │Passed│Failed│Time(s) │Status   ║
+╠═════════════════════════╪════════╪══════╪══════╪════════╪═════════╣
+║copywith_test            │Flutter │1     │0     │1.72    │✅ PASS   ║
+║equality_test            │Dart    │1     │0     │0.16    │✅ PASS   ║
+║json_serializable_test   │Dart    │1     │0     │0.16    │✅ PASS   ║
+║widget_test              │Flutter │1     │0     │2.26    │✅ PASS   ║
+╚═════════════════════════╧════════╧══════╧══════╧════════╧═════════╝
+
+Summary: 7 tests passed, 0 failed
+Total execution time: 6.29s
+Overall result: ✅ ALL TESTS PASSED
+```
+
+**Test Runner Features:**
+- **Table format**: Clean, readable test results with status indicators
+- **JSON output**: Machine-readable format for CI/CD integration (`make test_json`)
+- **CSV export**: Spreadsheet-compatible format (`--format csv`)
+- **Filtering**: Run only Dart tests (`--dart-only`) or Flutter tests (`--flutter-only`)
+- **Performance tracking**: Execution time per test and total runtime
+- **Error reporting**: Detailed error messages for failed tests
+- **Exit codes**: Returns 0 for success, 1 for failures (CI/CD friendly)
 
 ## Important Notes
 
@@ -215,7 +266,7 @@ List<AnnotationParameter> get annotationParameters => [
 - **Generated Files**: Never edit `*.g.dart` files - completely regenerated
 - **Function Names**: Use generated method names (`toStringGenerated()`, `isEqualTo()`, etc.)
 - **Build Order**: Always `make generate` after model changes
-- **Import Pattern**: Models import from `../annotations.g.dart`
+- **Import Pattern**: Models import from `package:flutter_annotations/annotations.g.dart` and `package:flutter_annotations/builder.g.dart`
 - **Linting**: Uses `flutter_lints` package with `avoid_print: false` configuration
 - **Formatting**: Preserves trailing commas as configured in `analysis_options.yaml`
 
