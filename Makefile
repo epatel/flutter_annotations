@@ -48,6 +48,7 @@ run:
 
 generate:
 	dart builder/builder.dart lib
+	dart format lib/ test/ builder/
 
 update_phony:
 	@echo "##### Updating .PHONY targets #####"
