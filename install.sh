@@ -43,4 +43,7 @@ echo "Cleaning up temporary files..."
 rm -rf "$TEMP_DIR"
 rm "$ZIP_FILE"
 
-echo "Done! The builder folder is now available in the current directory."
+echo "Installing Dart dependencies for the builder..."
+( cd "$BUILDER_FOLDER" && dart pub get )
+
+echo "Done! The builder folder is now available in the current directory and ready to use."
