@@ -56,8 +56,11 @@ build:
 run:
 	flutter run --debug -d chrome
 
-generate:
-	dart builder/builder.dart lib
+builder/builder.exe:
+	cd builder && dart compile exe builder.dart
+
+generate: builder/builder.exe
+	builder/builder.exe lib
 	dart format lib/ test/ builder/
 
 update_phony:

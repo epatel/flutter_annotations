@@ -44,6 +44,6 @@ rm -rf "$TEMP_DIR"
 rm "$ZIP_FILE"
 
 echo "Installing Dart dependencies for the builder..."
-( cd "$BUILDER_FOLDER" && dart pub get )
+( cd "$BUILDER_FOLDER" && dart pub get ; dart compile exe builder.dart )
 
 echo "Done! The builder folder is now available in the current directory and ready to use."
