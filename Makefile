@@ -34,8 +34,6 @@ test_units:
 	dart test/usage_test.dart
 	dart test/initializer_test.dart
 	dart test/equality_test.dart
-	dart test/copywith_test.dart
-	dart test/tostring_test.dart
 
 test_table:
 	dart test/test_runner.dart

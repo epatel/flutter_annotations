@@ -6,9 +6,8 @@ export 'package:provider/provider.dart';
 export 'package:go_router/go_router.dart';
 export 'package:cupertino_icons/cupertino_icons.dart';
 
-// Generated files
-export 'annotations.g.dart';
-export 'builder.g.dart';
+// Core exports (pure Dart, no Flutter dependencies)
+export 'core_index.dart';
 
 // App core
 export 'app.dart';
@@ -22,11 +21,6 @@ export 'design_system/colors.dart';
 export 'design_system/spacing.dart';
 export 'design_system/theme.dart';
 export 'design_system/typography.dart';
-
-// Models
-export 'models/category.dart';
-export 'models/product.dart';
-export 'models/user.dart';
 
 // Features
 export 'features/home/screens/home_screen.dart';

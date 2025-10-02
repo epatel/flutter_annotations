@@ -1,4 +1,4 @@
-import 'package:flutter_annotations/index.dart';
+import 'package:flutter_annotations/core_index.dart';
 
 @initializer
 @generateToString
