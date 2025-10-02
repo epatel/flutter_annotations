@@ -17,6 +17,7 @@ The builder system uses a registry-based architecture where annotation processor
 
 #### Entry Point
 - **`builder.dart`** - Main orchestrator that registers processors and coordinates generation
+- **`index.dart`** - Centralized exports for all builder dependencies
 
 #### Registry System
 - **`annotations/registry.dart`** - Central processor registry
@@ -27,6 +28,11 @@ The builder system uses a registry-based architecture where annotation processor
 - **`core/code_builder.dart`** - AST scanning and extension generation
 - **`core/annotation_generator.dart`** - Dynamic annotation class generation
 - **`core/field_info.dart`** - Field metadata representation
+
+#### Import Strategy
+- **Simplified imports**: All builder files use `import '../index.dart';` or `import 'index.dart';`
+- **Centralized dependencies**: All external packages and internal modules exported from `index.dart`
+- **Clean separation**: Builder system independent of main Flutter app dependencies
 
 ## 🚀 Usage
 
@@ -74,16 +80,18 @@ void builderInitializer() { /* ... */ }
 ### Step 1: Create Processor
 Create `annotations/my_annotation.dart`:
 ```dart
+import '../index.dart';
+
 class MyAnnotation extends BaseAnnotationProcessor {
   @override
   String get annotationName => 'MyAnnotation';
-  
-  @override  
+
+  @override
   List<String> get annotationAliases => ['myAnnotation'];
-  
+
   @override
   String get annotationComment => '/// Generates custom functionality';
-  
+
   @override
   List<AnnotationParameter> get annotationParameters => [
     AnnotationParameter(
@@ -93,11 +101,11 @@ class MyAnnotation extends BaseAnnotationProcessor {
       description: 'Whether to enable the feature',
     ),
   ];
-  
+
   static void register(AnnotationRegistry registry) {
     registry.add(MyAnnotation());
   }
-  
+
   @override
   String? processAnnotation(ClassDeclaration node, String className, String filePath, Annotation? annotation) {
     return '''
@@ -110,7 +118,13 @@ extension ${className}MyExtension on $className {
 }
 ```
 
-### Step 2: Register Processor
+### Step 2: Export and Register Processor
+Add to `index.dart` exports:
+```dart
+// Add to annotation system exports
+export 'annotations/my_annotation.dart';
+```
+
 Add to `builder.dart` in `_registerAnnotations()`:
 ```dart
 void _registerAnnotations(AnnotationRegistry registry) {
@@ -186,6 +200,12 @@ Classes with `@Initializer()` are added to a global `builderInitializer()` funct
 - **Configurable**: Annotations can accept parameters
 - **Type-safe**: Parameters are strongly typed
 - **Default values**: Sensible defaults for all parameters
+
+### Simplified Import Strategy
+- **Centralized exports**: All dependencies exported from `index.dart`
+- **Single import**: All files use `import '../index.dart';` or `import 'index.dart';`
+- **Reduced maintenance**: Adding new dependencies only requires updating index.dart
+- **Clean dependencies**: Clear separation between builder system and main app
 
 ### Dual File Generation
 - **annotations.g.dart**: Contains all annotation classes with parameters

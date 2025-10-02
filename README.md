@@ -89,10 +89,10 @@ dart builder/builder.dart lib
 
 ### Basic Model with Annotations
 ```dart
-import '../annotations.g.dart';
+import 'package:flutter_annotations/core_index.dart';
 
 @generateToString
-@generateEquality  
+@generateEquality
 @jsonSerializable
 @generateCopyWith
 class User {
@@ -103,7 +103,7 @@ class User {
 
   const User({
     required this.name,
-    required this.age, 
+    required this.age,
     required this.email,
     required this.isActive,
   });
@@ -112,8 +112,7 @@ class User {
 
 ### Advanced Model with Parameters and Nested Objects
 ```dart
-import '../annotations.g.dart';
-import 'category.dart';
+import 'package:flutter_annotations/core_index.dart';
 
 @Initializer()
 @JsonSerializable(explicitToJson: true, includeIfNull: false)
@@ -184,6 +183,10 @@ void main() {
 - **Registry Pattern**: Self-registering processors for maintainability
 - **Parameter Support**: Configurable annotations (JsonSerializable, etc.)
 - **Two-Phase Initialization**: Global setup with optional callbacks
+- **Simplified Import Strategy**: Centralized exports with separation of concerns:
+  - `lib/core_index.dart`: Pure Dart exports (models, generated files)
+  - `lib/index.dart`: Flutter exports (includes core_index.dart + Flutter dependencies)
+  - `builder/index.dart`: Builder system exports (analyzer, code generation tools)
 
 ## 🧪 Testing
 
@@ -197,11 +200,14 @@ void main() {
 
 ### Run Specific Tests
 ```bash
-make test_units                           # Run all unit tests
+make test_units                           # Run pure Dart unit tests (no Flutter dependencies)
+make test                                 # Run all tests (Dart + Flutter)
 dart test/json_serializable_test.dart     # JSON serialization testing
 dart test/usage_test.dart                 # Generated method usage
 dart test/initializer_test.dart           # Initialization system
 dart test/equality_test.dart              # Equality and hash code contract tests
+flutter test test/copywith_test.dart      # CopyWith functionality tests
+flutter test test/tostring_test.dart      # ToString generation tests
 flutter test test/widget_test.dart        # Flutter widget tests
 ```
 
@@ -229,7 +235,10 @@ Want to create custom annotations? See the comprehensive guide in [`builder/READ
   - `toStringGenerated()` (not `toString()`)
   - `isEqualTo()` (not `operator ==`)
   - `generatedHashCode` (not `hashCode`)
-- **Import Pattern**: Models import annotations from `../annotations.g.dart`
+- **Import Strategy**: Simplified import system with centralized exports:
+  - **Models**: Use `import 'package:flutter_annotations/core_index.dart';` (pure Dart, no Flutter dependencies)
+  - **Flutter code**: Use `import 'package:flutter_annotations/index.dart';` (includes Flutter dependencies)
+  - **Builder system**: Use `import 'index.dart';` within builder directory
 
 ## 🤝 Contributing
 
