@@ -1,12 +1,5 @@
-import 'dart:io';
-import 'package:analyzer/dart/analysis/utilities.dart';
-import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:dart_style/dart_style.dart';
-import 'package:pub_semver/pub_semver.dart';
+import '../index.dart';
 import 'package:path/path.dart' as path;
-import '../annotations/registry.dart';
-import 'annotation_generator.dart';
 
 class CodeBuilder {
   final List<String> _imports = [];

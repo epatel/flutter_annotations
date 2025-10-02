@@ -1,11 +1,4 @@
-import 'package:args/args.dart';
-import 'annotations/registry.dart';
-import 'annotations/toString_annotation.dart';
-import 'annotations/equality_annotation.dart';
-import 'annotations/json_annotation.dart';
-import 'annotations/copyWith_annotation.dart';
-import 'annotations/initializer_annotation.dart';
-import 'core/code_builder.dart';
+import 'index.dart';
 
 void main(List<String> arguments) {
   final parser = ArgParser()

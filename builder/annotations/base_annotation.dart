@@ -1,5 +1,4 @@
-import 'package:analyzer/dart/ast/ast.dart';
-import '../core/field_info.dart';
+import '../index.dart';
 
 /// Represents a parameter for an annotation class
 class AnnotationParameter {

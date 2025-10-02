@@ -1,8 +1,4 @@
-import 'dart:io';
-import 'package:dart_style/dart_style.dart';
-import 'package:pub_semver/pub_semver.dart';
-import '../annotations/registry.dart';
-import '../annotations/base_annotation.dart';
+import '../index.dart';
 
 class AnnotationGenerator {
   final AnnotationRegistry _registry;

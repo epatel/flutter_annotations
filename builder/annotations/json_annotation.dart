@@ -1,6 +1,4 @@
-import 'package:analyzer/dart/ast/ast.dart';
-import 'base_annotation.dart';
-import 'registry.dart';
+import '../index.dart';
 
 class JsonAnnotation extends BaseAnnotationProcessor {
   @override

@@ -1,4 +1,4 @@
-import 'base_annotation.dart';
+import '../index.dart';
 
 /// Registry for all annotation processors
 class AnnotationRegistry {
