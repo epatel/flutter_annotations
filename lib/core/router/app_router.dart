@@ -1,5 +1,4 @@
-import 'package:go_router/go_router.dart';
-import '../../features/home/screens/home_screen.dart';
+import 'package:flutter_annotations/index.dart';
 
 class AppRouter {
   static final GoRouter _router = GoRouter(

@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'app.dart';
-import 'builder.g.dart';
+import 'package:flutter_annotations/index.dart';
 
 void main() {
   builderInitializer();

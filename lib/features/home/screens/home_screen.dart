@@ -1,8 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../../core/providers/counter_provider.dart';
-import '../../../design_system/spacing.dart';
-import '../widgets/counter_display.dart';
+import 'package:flutter_annotations/index.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

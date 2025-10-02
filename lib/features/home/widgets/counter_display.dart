@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../../core/providers/counter_provider.dart';
-import '../../../design_system/spacing.dart';
+import 'package:flutter_annotations/index.dart';
 
 class CounterDisplay extends StatelessWidget {
   const CounterDisplay({super.key});

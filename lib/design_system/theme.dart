@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'colors.dart';
-import 'typography.dart';
+import 'package:flutter_annotations/index.dart';
 
 class AppTheme {
   AppTheme._();

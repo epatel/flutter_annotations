@@ -1,8 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'core/providers/counter_provider.dart';
-import 'core/router/app_router.dart';
-import 'design_system/theme.dart';
+import 'package:flutter_annotations/index.dart';
 
 class App extends StatelessWidget {
   const App({super.key});

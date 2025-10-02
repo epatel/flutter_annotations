@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter_annotations/index.dart';
 
 class CounterProvider extends ChangeNotifier {
   int _counter = 0;

@@ -1,5 +1,4 @@
-import 'package:flutter_annotations/annotations.g.dart';
-import 'package:flutter_annotations/builder.g.dart';
+import 'package:flutter_annotations/index.dart';
 
 @initializer
 @generateToString
