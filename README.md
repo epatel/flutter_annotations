@@ -83,7 +83,7 @@ make reset       # Clean and reinstall dependencies
 
 ### Manual Code Generation
 ```bash
-dart builder/builder.dart lib
+builder/builder.exe lib
 ```
 
 ## 📝 Usage Examples
@@ -241,17 +241,6 @@ Want to create custom annotations? See the comprehensive guide in [`builder/READ
   - **Models**: Use `import 'package:flutter_annotations/core_index.dart';` (pure Dart, no Flutter dependencies)
   - **Flutter code**: Use `import 'package:flutter_annotations/index.dart';` (includes Flutter dependencies)
   - **Builder system**: Use `import 'index.dart';` within builder directory
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Add/modify annotations following the established patterns
-4. Add comprehensive tests for new functionality
-5. Run `make generate && make test && make analyze` to ensure everything works
-6. Commit your changes (`git commit -m 'Add amazing feature'`)
-7. Push to the branch (`git push origin feature/amazing-feature`)
-8. Open a Pull Request
 
 ## 📄 License
 
