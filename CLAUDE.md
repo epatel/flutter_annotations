@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Flutter application that demonstrates a custom annotation system with dynamic code generation. The project serves as both a working Flutter app and a showcase for a fully modular, registry-based annotation/builder system that generates Dart code at build time.
+This is a Flutter application demonstrating a **self-referential annotation system** with dynamic code generation. The builder system uses its own `@Initializer` annotation to bootstrap annotation processors - achieving true "dogfooding". The project serves as both a working Flutter app and a showcase for a fully modular, registry-based annotation/builder system that generates Dart code at build time.
+
+**Key Innovation:** The builder directory contains annotation processor classes that are themselves marked with `@Initializer()`. Running the builder on itself generates `builder/builder.g.dart` which contains the `builderInitializer()` function that auto-registers all processors. This eliminates manual registration lists and achieves complete modularity.
 
 ## Core Architecture
 
@@ -131,25 +133,38 @@ class Product {
 
 ## Architecture Deep Dive
 
-### Registry-Based System
-- **AnnotationRegistry**: Central registry managing all processors
-- **BaseAnnotationProcessor**: Abstract base with metadata support
-- **AnnotationParameter**: Supports parameterized annotations
-- **Dynamic Comments**: Each processor provides its own documentation
+### Self-Referential Bootstrap System
+**The builder uses its own `@Initializer` annotation to register annotation processors** - achieving true "dogfooding":
 
-### Builder Components
-- `builder/builder.dart`: Main orchestrator with self-registering processors
-- `builder/core/code_builder.dart`: AST scanning and generation logic
+1. Each annotation processor class is marked with `@Initializer()`
+2. Each processor has `static Function()? initialize()` that registers itself via `getGlobalRegistry().add(this)`
+3. Running `./builder/builder.exe .` on the builder directory generates `builder/builder.g.dart` with `builderInitializer()`
+4. Calling `builderInitializer()` in `builder.dart` auto-registers all processors
+
+**Key Files:**
+- `builder/builder.dart`: Main entry point, calls `builderInitializer()` to auto-register processors
+- `builder/builder.g.dart`: **Generated file** containing `builderInitializer()` that calls all processor `initialize()` methods
+- `builder/annotations.g.dart`: **Generated file** with annotation class definitions
+- `builder/index.dart`: Centralized exports including generated files (self-referential)
+
+**Core Components:**
+- `builder/core/registry.dart`: `AnnotationRegistry` + global registry accessor (`getGlobalRegistry()`, `setGlobalRegistry()`)
+- `builder/core/base_annotation.dart`: Abstract `BaseAnnotationProcessor` with metadata support
+- `builder/core/code_builder.dart`: AST scanning and extension generation logic
 - `builder/core/annotation_generator.dart`: Dynamic annotation class generation
 - `builder/core/field_info.dart`: Field metadata and analysis utilities
-- `builder/annotations/base_annotation.dart`: Base processor with parameter support
-- `builder/annotations/registry.dart`: Central processor registry
-- Individual annotation processors:
-  - `builder/annotations/json_annotation.dart`: JSON serialization processor
-  - `builder/annotations/toString_annotation.dart`: ToString generation processor
-  - `builder/annotations/equality_annotation.dart`: Equality and hash code processor
-  - `builder/annotations/copyWith_annotation.dart`: CopyWith method processor
-  - `builder/annotations/initializer_annotation.dart`: Initialization system processor
+
+**Annotation Processors** (all marked with `@Initializer()` for self-registration)
+- `builder/annotations/json_annotation.dart`: JSON serialization with `explicitToJson` and `includeIfNull` parameters
+- `builder/annotations/toString_annotation.dart`: ToString generation
+- `builder/annotations/equality_annotation.dart`: Equality and hash code generation
+- `builder/annotations/copyWith_annotation.dart`: CopyWith method generation
+- `builder/annotations/initializer_annotation.dart`: Initialization system (bootstraps itself!)
+
+**Important:** The builder directory was recently refactored to move core classes from `builder/annotations/` to `builder/core/`:
+- `base_annotation.dart` moved from `annotations/` to `core/`
+- `registry.dart` moved from `annotations/` to `core/`
+- The `builder/index.dart` exports reflect this new structure
 
 ### Generated Files Structure
 - **lib/annotations.g.dart**: All annotation classes + convenience constants
@@ -166,28 +181,35 @@ class Product {
 
 ## Adding New Annotations
 
+The system is **fully modular** - processors self-register via `@Initializer` annotation:
+
 ### Step-by-Step Process
 1. **Create Processor**: `builder/annotations/new_annotation.dart`
 ```dart
+import '../index.dart';
+
+@Initializer()  // Self-registers via builderInitializer()
 class NewAnnotation extends BaseAnnotationProcessor {
   @override
   String get annotationName => 'NewAnnotation';
-  
-  @override  
+
+  @override
   List<String> get annotationAliases => ['newAnnotation'];
-  
+
   @override
   String get annotationComment => '/// Description of what this does';
-  
+
   @override
   List<AnnotationParameter> get annotationParameters => [
     // Add parameters if needed
   ];
-  
-  static void register(AnnotationRegistry registry) {
-    registry.add(NewAnnotation());
+
+  /// Initialize and register this annotation processor
+  static Function()? initialize() {
+    getGlobalRegistry().add(NewAnnotation());
+    return null;  // Optional callback
   }
-  
+
   @override
   String? processAnnotation(...) {
     // Generate extension code
@@ -195,8 +217,12 @@ class NewAnnotation extends BaseAnnotationProcessor {
 }
 ```
 
-2. **Register**: Add to `builder/builder.dart` in `_registerAnnotations()`
-3. **Test**: The annotation will automatically appear in generated files
+2. **Export**: Add to `builder/index.dart` exports
+3. **Regenerate Builder**: Run `cd builder && ./builder.exe .` to update `builder.g.dart`
+4. **Recompile**: Run `dart compile exe builder/builder.dart -o builder/builder.exe`
+5. **Test**: The annotation automatically registers and appears in generated files
+
+**No manual registration lists needed!** The `@Initializer` annotation handles everything.
 
 ### Parameter Support
 For parameterized annotations:
@@ -271,11 +297,21 @@ Overall result: ✅ ALL TESTS PASSED
 - **Formatting**: Preserves trailing commas as configured in `analysis_options.yaml`
 
 ### Architecture Decisions
-- **Extension Methods**: Avoids source file modification
-- **Registry Pattern**: Enables dynamic, maintainable annotation system  
-- **Parameter Support**: Allows complex annotation configuration
+- **Self-Referential Bootstrap**: Builder uses its own `@Initializer` annotation to register processors (pure dogfooding)
+- **Extension Methods**: Avoids source file modification, maintains clean separation
+- **Registry Pattern**: Enables dynamic, maintainable annotation system
+- **Global Registry**: Processors access registry via `getGlobalRegistry()` for self-registration
+- **Parameter Support**: Allows complex annotation configuration (e.g., `JsonSerializable`)
 - **Nested Object Support**: Full serialization with `explicitToJson`
 - **Callback System**: Two-phase initialization with optional callbacks
+
+### Builder Self-Bootstrap Workflow
+1. **Initial State**: Builder has annotation processor classes marked with `@Initializer()`
+2. **Generate Builder Code**: Run `./builder.exe .` inside `builder/` directory
+3. **Generated Output**: Creates `builder/builder.g.dart` with `builderInitializer()` function
+4. **Recompile**: Run `dart compile exe builder.dart` to include new `builderInitializer()`
+5. **Auto-Registration**: `builder.dart` calls `builderInitializer()` which registers all processors
+6. **Result**: Fully modular system - add new processor with `@Initializer()` and it auto-registers
 
 # important-instruction-reminders
 Do what has been asked; nothing more, nothing less.
