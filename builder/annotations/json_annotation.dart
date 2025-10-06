@@ -1,6 +1,6 @@
 import '../index.dart';
 
-@RegisterProcessor(priority: 30)
+@Initializer()
 class JsonAnnotation extends BaseAnnotationProcessor {
   @override
   String get annotationName => 'JsonSerializable';
@@ -28,9 +28,10 @@ class JsonAnnotation extends BaseAnnotationProcessor {
   String get annotationComment =>
       '/// Annotation to generate JSON serialization methods';
 
-  /// Register this annotation processor with the registry
-  static void register(AnnotationRegistry registry) {
-    registry.add(JsonAnnotation());
+  /// Initialize and register this annotation processor
+  static Function()? initialize() {
+    getGlobalRegistry().add(JsonAnnotation());
+    return null;
   }
 
   @override

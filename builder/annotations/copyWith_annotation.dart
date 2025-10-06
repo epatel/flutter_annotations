@@ -1,6 +1,6 @@
 import '../index.dart';
 
-@RegisterProcessor(priority: 40)
+@Initializer()
 class CopyWithAnnotation extends BaseAnnotationProcessor {
   @override
   String get annotationName => 'GenerateCopyWith';
@@ -12,9 +12,10 @@ class CopyWithAnnotation extends BaseAnnotationProcessor {
   String get annotationComment =>
       '/// Annotation to generate a copyWith method for a class';
 
-  /// Register this annotation processor with the registry
-  static void register(AnnotationRegistry registry) {
-    registry.add(CopyWithAnnotation());
+  /// Initialize and register this annotation processor
+  static Function()? initialize() {
+    getGlobalRegistry().add(CopyWithAnnotation());
+    return null;
   }
 
   @override

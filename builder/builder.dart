@@ -24,9 +24,13 @@ void main(List<String> arguments) {
     return;
   }
 
-  // Create registry and auto-discover annotation processors
+  // Create registry and set as global
   final registry = AnnotationRegistry();
-  ProcessorDiscovery.autoRegister(registry);
+  setGlobalRegistry(registry);
+
+  // Call builderInitializer to auto-register all @Initializer processors
+  print('🔧 Initializing annotation processors...');
+  builderInitializer();
 
   // Display registered processors
   print(

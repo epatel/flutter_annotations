@@ -5,23 +5,18 @@ export 'dart:io';
 export 'package:analyzer/dart/analysis/utilities.dart';
 export 'package:analyzer/dart/ast/ast.dart';
 export 'package:analyzer/dart/ast/visitor.dart';
-export 'package:dart_style/dart_style.dart';
-export 'package:pub_semver/pub_semver.dart';
-export 'package:path/path.dart';
 export 'package:args/args.dart';
+export 'package:dart_style/dart_style.dart';
+export 'package:path/path.dart';
+export 'package:pub_semver/pub_semver.dart';
 
 // Core modules
 export 'core/annotation_generator.dart';
+export 'core/base_annotation.dart';
 export 'core/code_builder.dart';
 export 'core/field_info.dart';
-export 'core/processor_discovery.dart';
+export 'core/registry.dart';
 
-// Annotation system
-export 'annotations/base_annotation.dart';
-export 'annotations/registry.dart';
-export 'annotations/register_processor_annotation.dart';
-export 'annotations/copyWith_annotation.dart';
-export 'annotations/equality_annotation.dart';
-export 'annotations/initializer_annotation.dart';
-export 'annotations/json_annotation.dart';
-export 'annotations/toString_annotation.dart';
+// Dog food - builder uses its own annotations
+export 'annotations.g.dart';
+export 'builder.g.dart';

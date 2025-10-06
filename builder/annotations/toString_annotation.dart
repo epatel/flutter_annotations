@@ -1,6 +1,6 @@
 import '../index.dart';
 
-@RegisterProcessor(priority: 10)
+@Initializer()
 class ToStringAnnotation extends BaseAnnotationProcessor {
   @override
   String get annotationName => 'GenerateToString';
@@ -12,9 +12,10 @@ class ToStringAnnotation extends BaseAnnotationProcessor {
   String get annotationComment =>
       '/// Annotation to generate toString method for a class';
 
-  /// Register this annotation processor with the registry
-  static void register(AnnotationRegistry registry) {
-    registry.add(ToStringAnnotation());
+  /// Initialize and register this annotation processor
+  static Function()? initialize() {
+    getGlobalRegistry().add(ToStringAnnotation());
+    return null;
   }
 
   @override

@@ -1,6 +1,6 @@
 import '../index.dart';
 
-@RegisterProcessor(priority: 20)
+@Initializer()
 class EqualityAnnotation extends BaseAnnotationProcessor {
   @override
   String get annotationName => 'GenerateEquality';
@@ -12,9 +12,10 @@ class EqualityAnnotation extends BaseAnnotationProcessor {
   String get annotationComment =>
       '/// Annotation to generate equality (== and hashCode) methods for a class';
 
-  /// Register this annotation processor with the registry
-  static void register(AnnotationRegistry registry) {
-    registry.add(EqualityAnnotation());
+  /// Initialize and register this annotation processor
+  static Function()? initialize() {
+    getGlobalRegistry().add(EqualityAnnotation());
+    return null;
   }
 
   @override

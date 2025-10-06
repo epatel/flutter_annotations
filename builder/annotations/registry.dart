@@ -1,5 +1,23 @@
 import '../index.dart';
 
+/// Global registry instance used by @Initializer annotation processors
+AnnotationRegistry? _globalRegistry;
+
+/// Get the global annotation registry
+AnnotationRegistry getGlobalRegistry() {
+  if (_globalRegistry == null) {
+    throw StateError(
+      'Global registry not initialized. Call setGlobalRegistry() first.',
+    );
+  }
+  return _globalRegistry!;
+}
+
+/// Set the global annotation registry
+void setGlobalRegistry(AnnotationRegistry registry) {
+  _globalRegistry = registry;
+}
+
 /// Registry for all annotation processors
 class AnnotationRegistry {
   final List<BaseAnnotationProcessor> _processors = [];
