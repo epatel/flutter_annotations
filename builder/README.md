@@ -11,18 +11,30 @@ This directory contains the dynamic annotation/code generation system for Flutte
 ## 🏗️ Architecture
 
 ### Overview
-The builder system uses a registry-based architecture where annotation processors self-register to handle specific annotations. It scans Dart files using the `analyzer` package, identifies annotated classes, and generates extensions without modifying source files.
+The builder system uses a **self-referential, registry-based architecture** where annotation processors are themselves marked with `@Initializer()` and auto-register via `builderInitializer()`. This achieves true "dogfooding" - the builder uses its own annotation system on itself.
+
+**Bootstrap Process:**
+1. Annotation processor classes are marked with `@Initializer()`
+2. Running `./builder.exe .` on the builder directory generates `builder.g.dart` with `builderInitializer()`
+3. `builder.dart` calls `builderInitializer()` which auto-registers all processors
+4. **Result**: Fully modular - add new processor with `@Initializer()`, regenerate, and it auto-registers
+
+The builder scans Dart files using the `analyzer` package, identifies annotated classes, and generates extensions without modifying source files.
 
 ### Key Components
 
 #### Entry Point
-- **`builder.dart`** - Main orchestrator that registers processors and coordinates generation
-- **`index.dart`** - Centralized exports for all builder dependencies
+- **`builder.dart`** - Main entry point, calls `builderInitializer()` for auto-registration
+- **`index.dart`** - Centralized exports including generated files (`builder.g.dart`, `annotations.g.dart`)
+
+#### Generated Files (Self-Referential)
+- **`builder.g.dart`** - Contains `builderInitializer()` that registers all processors
+- **`annotations.g.dart`** - Contains annotation class definitions
 
 #### Registry System
-- **`annotations/registry.dart`** - Central processor registry
-- **`annotations/base_annotation.dart`** - Abstract base class with parameter support
-- **`annotations/*_annotation.dart`** - Individual annotation processors
+- **`core/registry.dart`** - Central processor registry + global registry accessor (`getGlobalRegistry()`, `setGlobalRegistry()`)
+- **`core/base_annotation.dart`** - Abstract base class with parameter support
+- **`annotations/*_annotation.dart`** - Individual processors (all marked with `@Initializer()`)
 
 #### Code Generation
 - **`core/code_builder.dart`** - AST scanning and extension generation
@@ -77,11 +89,14 @@ void builderInitializer() { /* ... */ }
 
 ## 🔧 Adding New Annotations
 
+The system is **fully modular** - processors self-register via `@Initializer` annotation. No manual registration lists needed!
+
 ### Step 1: Create Processor
 Create `annotations/my_annotation.dart`:
 ```dart
 import '../index.dart';
 
+@Initializer()  // Self-registers via builderInitializer()
 class MyAnnotation extends BaseAnnotationProcessor {
   @override
   String get annotationName => 'MyAnnotation';
@@ -102,8 +117,10 @@ class MyAnnotation extends BaseAnnotationProcessor {
     ),
   ];
 
-  static void register(AnnotationRegistry registry) {
-    registry.add(MyAnnotation());
+  /// Initialize and register this annotation processor
+  static Function()? initialize() {
+    getGlobalRegistry().add(MyAnnotation());
+    return null;  // Optional callback
   }
 
   @override
@@ -118,23 +135,29 @@ extension ${className}MyExtension on $className {
 }
 ```
 
-### Step 2: Export and Register Processor
+### Step 2: Export Processor
 Add to `index.dart` exports:
 ```dart
 // Add to annotation system exports
 export 'annotations/my_annotation.dart';
 ```
 
-Add to `builder.dart` in `_registerAnnotations()`:
-```dart
-void _registerAnnotations(AnnotationRegistry registry) {
-  // ... existing registrations
-  MyAnnotation.register(registry);
-}
+### Step 3: Regenerate Builder (Self-Bootstrap)
+Run the builder on itself to update `builder.g.dart`:
+```bash
+cd builder
+./builder.exe .
 ```
 
-### Step 3: Generate
-Run `dart builder/builder.dart lib` and the annotation will be available.
+### Step 4: Recompile Builder
+```bash
+dart compile exe builder.dart -o builder.exe
+```
+
+### Step 5: Use New Annotation
+Run `dart builder/builder.dart lib` and the annotation is automatically available!
+
+**No manual registration needed!** The `@Initializer` annotation handles everything.
 
 ## 🧪 Parameter Support
 
@@ -169,22 +192,38 @@ class Product { /* ... */ }
 
 ## 🔍 How It Works
 
-### 1. File Scanning
+### 1. Self-Referential Bootstrap
+On startup, `builder.dart` calls `builderInitializer()` (from generated `builder.g.dart`) which auto-registers all annotation processors marked with `@Initializer()`.
+
+### 2. File Scanning
 The builder recursively scans the source directory for `.dart` files, parsing each with the Dart analyzer.
 
-### 2. Annotation Detection
+### 3. Annotation Detection
 For each class, it checks for annotations that match registered processors using `canProcess()`.
 
-### 3. Code Generation
+### 4. Code Generation
 Matched processors generate extension methods via `processAnnotation()`, keeping original classes unchanged.
 
-### 4. File Writing
+### 5. File Writing
 Generated extensions are written to `builder.g.dart`, annotations to `annotations.g.dart`.
 
-### 5. Initialization Support
+### 6. Initialization Support
 Classes with `@Initializer()` are added to a global `builderInitializer()` function with callback support.
 
+### Self-Bootstrap Workflow
+When you add a new processor:
+1. Mark it with `@Initializer()` and add `initialize()` method
+2. Run `./builder.exe .` inside builder directory (generates new `builder.g.dart`)
+3. Recompile with `dart compile exe builder.dart`
+4. New processor is automatically registered on next run!
+
 ## 💡 Design Principles
+
+### Self-Referential Bootstrap
+- **Dogfooding**: Builder uses its own `@Initializer` annotation to register processors
+- **Modular**: Processors marked with `@Initializer()` auto-register via `builderInitializer()`
+- **Zero configuration**: No manual registration lists - fully automatic
+- **Self-generating**: Running builder on itself updates registration code
 
 ### Extension-Based Generation
 - **Non-intrusive**: Original classes remain unchanged
@@ -192,7 +231,7 @@ Classes with `@Initializer()` are added to a global `builderInitializer()` funct
 - **Import-friendly**: Extensions are automatically available
 
 ### Registry Pattern
-- **Self-registering**: Processors register themselves
+- **Global registry**: Processors access `getGlobalRegistry()` for self-registration
 - **Dynamic**: No hardcoded annotation handling
 - **Maintainable**: Easy to add/remove processors
 
@@ -203,13 +242,14 @@ Classes with `@Initializer()` are added to a global `builderInitializer()` funct
 
 ### Simplified Import Strategy
 - **Centralized exports**: All dependencies exported from `index.dart`
+- **Self-referential**: `index.dart` exports generated files (`builder.g.dart`, `annotations.g.dart`)
 - **Single import**: All files use `import '../index.dart';` or `import 'index.dart';`
 - **Reduced maintenance**: Adding new dependencies only requires updating index.dart
 - **Clean dependencies**: Clear separation between builder system and main app
 
 ### Dual File Generation
 - **annotations.g.dart**: Contains all annotation classes with parameters
-- **builder.g.dart**: Contains generated extensions and initialization code
+- **builder.g.dart**: Contains generated extensions and `builderInitializer()` function
 
 ## 🚨 Important Notes
 

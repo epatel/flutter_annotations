@@ -11,7 +11,8 @@ The builder system is a standalone Dart tool that can be installed and used in a
 ## 🚀 Features
 
 ### Dynamic Annotation System
-- **Registry-Based Architecture**: Self-registering annotation processors
+- **Self-Referential Bootstrap**: Builder uses its own `@Initializer` annotation to register processors - pure "dogfooding"
+- **Registry-Based Architecture**: Fully modular - processors auto-register via `builderInitializer()`
 - **Parameter Support**: Configurable annotations (e.g., `JsonSerializable` with `explicitToJson`, `includeIfNull`)
 - **Nested Object Serialization**: Full round-trip JSON serialization with complex objects
 - **Extension Generation**: Creates extensions rather than modifying source files
@@ -179,14 +180,15 @@ void main() {
 - **Installation & Usage**: See [`builder/README.md`](builder/README.md) for detailed technical documentation on how to use the builder system in your own projects
 
 ### Key Design Principles
+- **Self-Referential Bootstrap**: Builder uses its own `@Initializer` annotation on processor classes to achieve modular auto-registration
 - **Extension Methods**: Clean separation, non-intrusive code generation
-- **Registry Pattern**: Self-registering processors for maintainability
+- **Registry Pattern**: Processors marked with `@Initializer()` auto-register via `builderInitializer()`
 - **Parameter Support**: Configurable annotations (JsonSerializable, etc.)
 - **Two-Phase Initialization**: Global setup with optional callbacks
 - **Simplified Import Strategy**: Centralized exports with separation of concerns:
   - `lib/core_index.dart`: Pure Dart exports (models, generated files)
   - `lib/index.dart`: Flutter exports (includes core_index.dart + Flutter dependencies)
-  - `builder/index.dart`: Builder system exports (analyzer, code generation tools)
+  - `builder/index.dart`: Builder system exports (analyzer, code generation tools, **generated files**)
 
 ## 🧪 Testing
 
