@@ -1,5 +1,6 @@
 import '../index.dart';
 
+@RegisterProcessor(priority: 30)
 class JsonAnnotation extends BaseAnnotationProcessor {
   @override
   String get annotationName => 'JsonSerializable';

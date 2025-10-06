@@ -14,10 +14,12 @@ export 'package:args/args.dart';
 export 'core/annotation_generator.dart';
 export 'core/code_builder.dart';
 export 'core/field_info.dart';
+export 'core/processor_discovery.dart';
 
 // Annotation system
 export 'annotations/base_annotation.dart';
 export 'annotations/registry.dart';
+export 'annotations/register_processor_annotation.dart';
 export 'annotations/copyWith_annotation.dart';
 export 'annotations/equality_annotation.dart';
 export 'annotations/initializer_annotation.dart';

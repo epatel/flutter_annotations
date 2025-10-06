@@ -1,5 +1,6 @@
 import '../index.dart';
 
+@RegisterProcessor(priority: 50)
 class InitializerAnnotation extends BaseAnnotationProcessor {
   @override
   String get annotationName => 'Initializer';

@@ -1,5 +1,6 @@
 import '../index.dart';
 
+@RegisterProcessor(priority: 10)
 class ToStringAnnotation extends BaseAnnotationProcessor {
   @override
   String get annotationName => 'GenerateToString';

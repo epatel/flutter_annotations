@@ -8,11 +8,7 @@ class Category {
   final String name;
   final String? description;
 
-  const Category({
-    required this.id,
-    required this.name,
-    this.description,
-  });
+  const Category({required this.id, required this.name, this.description});
 
   @override
   String toString() => toStringGenerated();

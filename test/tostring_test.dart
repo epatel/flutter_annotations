@@ -50,11 +50,7 @@ void main() {
     });
 
     test('Category toStringGenerated handles null fields', () {
-      final category = Category(
-        id: 'cat-02',
-        name: 'Books',
-        description: null,
-      );
+      final category = Category(id: 'cat-02', name: 'Books', description: null);
       final categoryString = category.toStringGenerated();
 
       expect(categoryString, contains('Category'));

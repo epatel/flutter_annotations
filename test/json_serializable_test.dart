@@ -39,11 +39,7 @@ void main() {
 
   // Test 2: Category with null description
   print('\n--- Category with null description ---');
-  final categoryNull = Category(
-    id: 'books',
-    name: 'Books',
-    description: null,
-  );
+  final categoryNull = Category(id: 'books', name: 'Books', description: null);
 
   final categoryNullMap = categoryNull.toJson();
   print('Category with null Map: $categoryNullMap');

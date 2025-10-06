@@ -12,9 +12,7 @@ class HomeScreen extends StatelessWidget {
       ),
       body: const Padding(
         padding: EdgeInsets.all(AppSpacing.md),
-        child: Center(
-          child: CounterDisplay(),
-        ),
+        child: Center(child: CounterDisplay()),
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,

@@ -1,5 +1,6 @@
 import '../index.dart';
 
+@RegisterProcessor(priority: 20)
 class EqualityAnnotation extends BaseAnnotationProcessor {
   @override
   String get annotationName => 'GenerateEquality';

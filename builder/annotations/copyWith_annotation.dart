@@ -1,5 +1,6 @@
 import '../index.dart';
 
+@RegisterProcessor(priority: 40)
 class CopyWithAnnotation extends BaseAnnotationProcessor {
   @override
   String get annotationName => 'GenerateCopyWith';

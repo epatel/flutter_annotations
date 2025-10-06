@@ -24,26 +24,11 @@ void main(List<String> arguments) {
     return;
   }
 
-  // Create registry and register all annotation processors
+  // Create registry and auto-discover annotation processors
   final registry = AnnotationRegistry();
-  _registerAnnotations(registry);
+  ProcessorDiscovery.autoRegister(registry);
 
-  // Create builder with registry and generate code
-  final builder = CodeBuilder(registry);
-  builder.generateFiles(sourceDir);
-}
-
-/// Register all annotation processors with the registry
-void _registerAnnotations(AnnotationRegistry registry) {
-  print('📋 Registering annotation processors...');
-
-  // Self-registering annotations
-  ToStringAnnotation.register(registry);
-  EqualityAnnotation.register(registry);
-  JsonAnnotation.register(registry);
-  CopyWithAnnotation.register(registry);
-  InitializerAnnotation.register(registry);
-
+  // Display registered processors
   print(
     '✅ Registered ${registry.processors.length} processors for annotations:',
   );
@@ -52,4 +37,8 @@ void _registerAnnotations(AnnotationRegistry registry) {
       '  • @${processor.annotationName}(), [ ${processor.annotationAliases.map((e) => '@$e').join(', ')} ]',
     );
   }
+
+  // Create builder with registry and generate code
+  final builder = CodeBuilder(registry);
+  builder.generateFiles(sourceDir);
 }
