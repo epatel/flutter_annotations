@@ -38,8 +38,8 @@ class AnnotationGenerator {
     if (parameters.isEmpty) {
       // Simple annotation without parameters
       return '''
-$comment
 class $annotationName {
+$comment
   const $annotationName();
 }''';
     }
@@ -68,6 +68,7 @@ $comment
 class $annotationName {
 ${fieldsBuffer.toString().trimRight()}
 
+$comment
   const $annotationName({
     $constructorParams,
   });
@@ -83,6 +84,8 @@ ${fieldsBuffer.toString().trimRight()}
       if (processor.annotationAliases.isNotEmpty) {
         final constantName = processor.annotationAliases.first;
         final className = processor.annotationName;
+        final comment = processor.annotationComment;
+        buffer.writeln('$comment');
         buffer.writeln('const $constantName = $className();');
       }
     }

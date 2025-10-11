@@ -10,7 +10,13 @@ class ToStringAnnotation extends BaseAnnotationProcessor {
 
   @override
   String get annotationComment =>
-      '/// Annotation to generate toString method for a class';
+      '/// Annotation to generate toString method for a class\n'
+      '///\n'
+      '/// Add this method to the class\n'
+      '/// ```\n'
+      '/// @override\n'
+      '/// String toString() => toStringGenerated();\n'
+      '/// ```';
 
   /// Initialize and register this annotation processor
   static Function()? initialize() {

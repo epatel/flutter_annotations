@@ -32,7 +32,7 @@ This is a Flutter application demonstrating a **self-referential annotation syst
 make generate
 
 # Development
-make run              # Flutter app in debug mode
+make run              # Flutter app in debug mode (Chrome target)
 make test             # All tests including JSON round-trip tests
 make test_table       # All tests with formatted table results
 make test_json        # All tests with JSON output for CI/CD
@@ -219,7 +219,7 @@ class NewAnnotation extends BaseAnnotationProcessor {
 
 2. **Export**: Add to `builder/index.dart` exports
 3. **Regenerate Builder**: Run `cd builder && ./builder.exe .` to update `builder.g.dart`
-4. **Recompile**: Run `dart compile exe builder/builder.dart -o builder/builder.exe`
+4. **Recompile**: Run `make builder/builder.exe` or `dart compile exe builder/builder.dart -o builder/builder.exe`
 5. **Test**: The annotation automatically registers and appears in generated files
 
 **No manual registration lists needed!** The `@Initializer` annotation handles everything.
@@ -309,7 +309,7 @@ Overall result: ✅ ALL TESTS PASSED
 1. **Initial State**: Builder has annotation processor classes marked with `@Initializer()`
 2. **Generate Builder Code**: Run `./builder.exe .` inside `builder/` directory
 3. **Generated Output**: Creates `builder/builder.g.dart` with `builderInitializer()` function
-4. **Recompile**: Run `dart compile exe builder.dart` to include new `builderInitializer()`
+4. **Recompile**: Run `make builder/builder.exe` (or `dart compile exe builder/builder.dart -o builder/builder.exe`) to include new `builderInitializer()`
 5. **Auto-Registration**: `builder.dart` calls `builderInitializer()` which registers all processors
 6. **Result**: Fully modular system - add new processor with `@Initializer()` and it auto-registers
 

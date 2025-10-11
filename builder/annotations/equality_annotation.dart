@@ -10,7 +10,15 @@ class EqualityAnnotation extends BaseAnnotationProcessor {
 
   @override
   String get annotationComment =>
-      '/// Annotation to generate equality (== and hashCode) methods for a class';
+      '/// Annotation to generate equality (== and hashCode) methods for a class\n'
+      '///\n'
+      '/// Add these methods to the class\n'
+      '/// ```\n'
+      '/// @override\n'
+      '/// bool operator ==(Object other) => isEqualTo(other);\n'
+      '/// @override\n'
+      '/// int get hashCode => generatedHashCode;\n'
+      '/// ```';
 
   /// Initialize and register this annotation processor
   static Function()? initialize() {
